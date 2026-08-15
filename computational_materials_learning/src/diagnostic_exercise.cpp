@@ -4,7 +4,7 @@
 int main(){
 	const std::vector<double> Temp = {1000.0,1100.0,1200.0,1300.0,1400.0,1500.0,1600.0};
 	std::vector<double> Diffusivities(Temp.size());
-	Diffusivities = arrhenius_diffusivities(Temp,1.0e-4,250000.0,8.314);
+	Diffusivities = arrhenius_diffusivities_empty_pushback(Temp,1.0e-4,250000.0,8.314);
 	for(std::size_t i=0;i+1<Diffusivities.size();++i){
 		if(Diffusivities[i+1]>=Diffusivities[i])
 			std::cout<<"The monotonicity trend seems to be followed at poosition "<<i<<std::endl;

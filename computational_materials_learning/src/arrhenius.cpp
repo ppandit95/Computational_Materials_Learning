@@ -21,4 +21,17 @@ std::vector<double> arrhenius_diffusivities(
     }
     return D;	
 }
-
+std::vector<double> arrhenius_diffusivities_empty_pushback(
+    const std::vector<double>& temperatures,
+    double D0,
+    double Q,
+    double R){
+    std::vector<double> output;
+    double D;
+    output.reserve(temperatures.size());
+    for(std::size_t i=0;i<temperatures.size();++i){
+    	D = arrhenius_diffusivity(temperatures[i],D0,Q,R);
+    	output.push_back(D);	
+    }
+    return output;
+    }

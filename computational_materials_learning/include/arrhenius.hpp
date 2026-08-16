@@ -14,6 +14,8 @@ double arrhenius_diffusivity(double T,
  * @return - A vector of diffusivites at corresponding temperatures(in m^2/sec)
  *
  * @note - To check the scientific feasibility of arrhenius relationship as a dignostic, monotonicity of increasing Diffusivities has been checked with increase in temperatures.Also, the provided temperature should either be greater than 0 K or equal to it else the diffusivity will not make sense physically.
+ *
+ * @throws std::invalid_argument which ensues that Temperature should be greater than 0
  */
 std::vector<double> arrhenius_diffusivities(
     const std::vector<double>& temperatures,

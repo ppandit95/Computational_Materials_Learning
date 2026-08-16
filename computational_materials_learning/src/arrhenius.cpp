@@ -1,6 +1,7 @@
 #include<cmath>
 #include<iostream>
 #include<vector>
+#include<stdexcept>
 #include"arrhenius.hpp"
 double arrhenius_diffusivity(double T,
                              double D0,
@@ -8,6 +9,8 @@ double arrhenius_diffusivity(double T,
                              double R){
                              double D;
                              D = D0*std::exp(-Q/(R*T));
+                             if(T <= 0.0){
+                             	throw std::invalid_argument("Temperature must be greater than 0 K.");}
                              return D;
 }
 std::vector<double> arrhenius_diffusivities(

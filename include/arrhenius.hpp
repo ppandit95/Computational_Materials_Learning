@@ -27,3 +27,13 @@ std::vector<double> arrhenius_diffusivities_empty_pushback(
     double D0,
     double Q,
     double R);
+/**
+ * @brief A diagnostic function to check the monootonicity of Diffusivities with Temperature
+ *
+ * @param values a vector of values
+ * @return a boolean value
+ *
+ * @note It checks for monotonicity of values in Diffusivity Vector
+ */
+bool is_monotonically_non_decreasing(
+     std::vector<double>& values);

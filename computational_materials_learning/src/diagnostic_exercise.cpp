@@ -13,13 +13,10 @@ int main(){
     		std::cerr << "Input error: " << e.what() << '\n';
 		return 1;
 	}
-	for(std::size_t i=0;i+1<Diffusivities.size();++i){
-		if(Diffusivities[i+1]>=Diffusivities[i])
-			std::cout<<"The monotonicity trend seems to be followed at position "<<i<<std::endl;
-		else
-			std::cout<<"There seems to be issue with pysics of arrhenius equation at "<<i<<std::endl;
-	}
+	std::cout << "The monotonicity trend for Diffusivity vector is : " << is_monotonically_non_decreasing(Diffusivities) << std::endl;
 	std::cout<<"--------------------------------------------------------"<<std::endl;
+	if (is_monotonically_non_decreasing(Diffusivities) == false)
+		return 1;
 	if (Temp.size() != Diffusivities.size())
 	{
     		std::cerr << "Error: temperature and diffusivity sizes differ.\n";
@@ -31,6 +28,23 @@ int main(){
         		<< "T = " << Temp[i] << " K"
         		<< ", D = " << Diffusivities[i] << " m^2/s\n";
 	}
+	std::cout<<"--------------------------------------------------------"<<std::endl;
+	//Checking the implementation of Monotonicity function
+	std::vector<double> a={};
+	std::vector<double> b={5.0};
+	std::vector<double> c={1.0,2.0,3.0};
+	std::vector<double> d={1.0,1.0,2.0};
+	std::vector<double> e={1.0, 2.0, 0.5, 4.0};
+	std::cout << "The monotonicity trend for a vector is : " << is_monotonically_non_decreasing(a) << std::endl;
+	std::cout<<"--------------------------------------------------------"<<std::endl;
+	std::cout << "The monotonicity trend for b vector is : " << is_monotonically_non_decreasing(b) << std::endl;
+	std::cout<<"--------------------------------------------------------"<<std::endl;
+	std::cout << "The monotonicity trend for c vector is : " << is_monotonically_non_decreasing(c) << std::endl;
+	std::cout<<"--------------------------------------------------------"<<std::endl;
+	std::cout << "The monotonicity trend for d vector is : " << is_monotonically_non_decreasing(d) << std::endl;
+	std::cout<<"--------------------------------------------------------"<<std::endl;
+	std::cout << "The monotonicity trend for e vector is : " << is_monotonically_non_decreasing(e) << std::endl;
+	std::cout<<"--------------------------------------------------------"<<std::endl;
 	return 0;
 	
 }

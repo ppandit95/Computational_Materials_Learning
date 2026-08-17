@@ -8,9 +8,10 @@ double arrhenius_diffusivity(double T,
                              double Q,
                              double R){
                              double D;
-                             D = D0*std::exp(-Q/(R*T));
+                       
                              if(T <= 0.0){
                              	throw std::invalid_argument("Temperature must be greater than 0 K.");}
+                             D = D0*std::exp(-Q/(R*T));
                              return D;
 }
 std::vector<double> arrhenius_diffusivities(
@@ -37,4 +38,18 @@ std::vector<double> arrhenius_diffusivities_empty_pushback(
     	output.push_back(D);	
     }
     return output;
+    }
+bool is_monotonically_non_decreasing(
+    std::vector<double>& values){
+    if(values.size() == 1 || values.size() == 0){
+    	//std::cout<<"The monotonicity trend seems to be followed at position "<<i<<std::endl;
+	return true;}
+    for (std::size_t i = 0; i + 1 < values.size(); ++i)
+    {
+        if (values[i + 1] < values[i])
+        {
+            return false;
+        }
+    }
+    return true;
     }

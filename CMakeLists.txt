@@ -23,6 +23,7 @@ add_library(arrhenius STATIC
     include/arrhenius.hpp
     src/arrhenius.cpp
 )
+########################################Diagnostic Exercise#################################
 add_executable(diagnostic_exercise_new src/diagnostic_exercise.cpp)
 target_compile_options(diagnostic_exercise_new PRIVATE
 	-fsanitize=address,undefined
@@ -33,3 +34,14 @@ target_link_options(diagnostic_exercise_new PRIVATE
 	)
 target_include_directories(arrhenius PUBLIC /home/pushkar/computational_materials_learning/include)
 target_link_libraries(diagnostic_exercise_new PRIVATE arrhenius)
+############################Monotonicity Test########################################
+add_executable(monotonicity_test src/monotonicity_test.cpp)
+target_compile_options(monotonicity_test PRIVATE
+	-fsanitize=address,undefined
+	-fno-omit-frame-pointer
+	)
+target_link_options(monotonicity_test PRIVATE
+	-fsanitize=address,undefined
+	)
+target_include_directories(arrhenius PUBLIC /home/pushkar/computational_materials_learning/include)
+target_link_libraries(monotonicity_test PRIVATE arrhenius)

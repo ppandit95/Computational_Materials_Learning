@@ -2,6 +2,7 @@
 #include<iostream>
 #include<vector>
 #include<stdexcept>
+#include<cmath>
 #include"arrhenius.hpp"
 double arrhenius_diffusivity(double T,
                              double D0,
@@ -53,3 +54,17 @@ bool is_monotonically_non_decreasing(
     }
     return true;
     }
+bool approximately_equal(
+    double a,
+    double b,
+    double relative_tolerance){
+    if(relative_tolerance<0)
+    	throw std::invalid_argument("The provided relative tolerance is negative which donot make sense.");
+    //if((std::abs(a) < std::numeric_limits<double>::epsilon()) && (std::abs(b) < std::numeric_limits<double>::epsilon()))
+    	//return true;
+    if (std::abs(a-b)<=(relative_tolerance*std::max(std::abs(a),std::abs(b))))
+    	return true;
+    else
+    	return false;
+    	}
+    	

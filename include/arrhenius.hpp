@@ -15,7 +15,7 @@ double arrhenius_diffusivity(double T,
  *
  * @note - To check the scientific feasibility of arrhenius relationship as a dignostic, monotonicity of increasing Diffusivities has been checked with increase in temperatures.Also, the provided temperature should either be greater than 0 K or equal to it else the diffusivity will not make sense physically.
  *
- * @throws std::invalid_argument which ensues that Temperature should be greater than 0
+ * @throws std::invalid_argument which ensures that Temperature should be greater than 0
  */
 std::vector<double> arrhenius_diffusivities(
     const std::vector<double>& temperatures,
@@ -37,3 +37,15 @@ std::vector<double> arrhenius_diffusivities_empty_pushback(
  */
 bool is_monotonically_non_decreasing(
      std::vector<double>& values);
+     /**
+ * @brief A diagnostic function to check whether 2 float quantities are approximately equal or not
+ *
+ * @param a , b,  relative tolerance as float values 
+ * @return true/false stating whether the quantities are true or false
+ * @throws an invalid_argument which informs that relative tolerance is negative which donot make sense
+ * @note In case if a and b are less than machine precision then we can consider them to be equal 
+ */
+bool approximately_equal(
+    double a,
+    double b,
+    double relative_tolerance);

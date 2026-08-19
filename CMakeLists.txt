@@ -45,3 +45,15 @@ target_link_options(monotonicity_test PRIVATE
 	)
 target_include_directories(arrhenius PUBLIC /home/pushkar/computational_materials_learning/include)
 target_link_libraries(monotonicity_test PRIVATE arrhenius)
+
+############################Arrhenius Test########################################
+add_executable(arrhenius_test src/arrhenius_test.cpp)
+target_compile_options(monotonicity_test PRIVATE
+	-fsanitize=address,undefined
+	-fno-omit-frame-pointer
+	)
+target_link_options(arrhenius_test PRIVATE
+	-fsanitize=address,undefined
+	)
+target_include_directories(arrhenius PUBLIC /home/pushkar/computational_materials_learning/include)
+target_link_libraries(arrhenius_test PRIVATE arrhenius)

@@ -27,8 +27,9 @@ int main(){
     		std::cout
         		<< "T = " << Temp[i] << " K"
         		<< ", D = " << Diffusivities[i] << " m^2/s\n";
+        	std::cout<<"--------------------------------------------------------"<<std::endl;
 	}
-	std::cout<<"--------------------------------------------------------"<<std::endl;
+
 	//Checking the implementation of Monotonicity function
 	std::vector<double> a={};
 	std::vector<double> b={5.0};

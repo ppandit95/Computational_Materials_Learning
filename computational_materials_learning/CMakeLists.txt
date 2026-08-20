@@ -1,9 +1,11 @@
-	cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.16)
 
 project(computational_materials_learning LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+enable_testing()
 
 add_executable(hello cpp_foundations/hello.cpp)
 add_executable(diffusivity cpp_foundations/diffusivity.cpp)
@@ -57,3 +59,22 @@ target_link_options(arrhenius_test PRIVATE
 	)
 target_include_directories(arrhenius PUBLIC /home/pushkar/computational_materials_learning/include)
 target_link_libraries(arrhenius_test PRIVATE arrhenius)
+###############################Adding Tests########################################
+add_test(
+    NAME unit_test_1
+    COMMAND ./diagnostic_exercise_new
+)
+add_test(
+    NAME unit_test_2
+    COMMAND ./arrhenius_test
+)
+##################################Adding Doxygen for Docs######################################
+find_package(Doxygen REQUIRED)
+if(DOXYGEN_FOUND)
+    add_custom_target(docs
+        COMMAND ${DOXYGEN_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in"
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMENT "Generating API documentation with Doxygen"
+        VERBATIM
+    )
+endif()

@@ -25,7 +25,7 @@ add_library(arrhenius STATIC
     include/arrhenius.hpp
     src/arrhenius.cpp
 )
-########################################Diagnostic Exercise#################################
+########################################Diagnostic Exercise 2#################################
 add_executable(diagnostic_exercise_new src/diagnostic_exercise.cpp)
 target_compile_options(diagnostic_exercise_new PRIVATE
 	-fsanitize=address,undefined
@@ -78,3 +78,25 @@ if(DOXYGEN_FOUND)
         VERBATIM
     )
 endif()
+##################################Arrhenius Model Class Library and its tests######################################
+add_library(arrhenius_model STATIC
+    include/arrhenius_model.hpp
+    src/arrhenius_model.cpp
+)
+target_link_libraries(arrhenius_model
+    PRIVATE arrhenius
+)
+add_executable(arrhenius_model_test src/arrhenius_model_test.cpp)
+target_compile_options(arrhenius_model_test PRIVATE
+	-fsanitize=address,undefined
+	-fno-omit-frame-pointer
+	)
+target_link_options(arrhenius_model_test PRIVATE
+	-fsanitize=address,undefined
+	)
+target_include_directories(arrhenius_model PUBLIC /home/pushkar/computational_materials_learning/include)
+target_link_libraries(arrhenius_model_test PRIVATE arrhenius_model)
+add_test(
+    NAME unit_test_3
+    COMMAND ./arrhenius_model_test
+)

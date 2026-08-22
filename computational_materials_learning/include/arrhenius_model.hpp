@@ -10,6 +10,7 @@
  * @param D0 Pre-exponential factor in m^2/s.
  * @param Q Activation energy in J/mol.
  * @param R Gas constant in J/(mol K).
+ * @param temperatures Absolute temperature range in K.Must be greater than 0.
  *
  * @return Diffusivity in m^2/s.
  *
@@ -19,6 +20,7 @@ class ArrheniusModel
 	public:
 		ArrheniusModel(double D0,double Q,double R);
 		double diffusivity(double T) const;
+		std::vector<double> diffusivities(const std::vector<double>& temperatures) const;
 	private:
 	double D0_;
 	double Q_;

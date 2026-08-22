@@ -1,6 +1,7 @@
 #include<iostream>
 #include<cmath>
 #include<stdexcept>
+#include <vector>
 #include"arrhenius_model.hpp"
 #include"arrhenius.hpp"
 ArrheniusModel::ArrheniusModel(double D0,double Q,double R){
@@ -19,10 +20,36 @@ ArrheniusModel::ArrheniusModel(double D0,double Q,double R){
 double ArrheniusModel::diffusivity(double T) const{
 	if(T< 0.0 || approximately_equal(T,0.0,1.0e-6)){
 	 	throw std::invalid_argument("The provided temperature is Negative.");
-	 	return 1;
 	 }
 	 return arrhenius_diffusivity(T,D0_,Q_,R_);
 }
-	 
+std::vector<double> ArrheniusModel::diffusivities(
+    const std::vector<double>& temperatures) const{
+    	std::vector<double> Diffusivities;
+    	double D;
+    	Diffusivities.reserve(temperatures.size());
+    	/*
+    	try{
+    		bool = is_monotonically_non_decreasing(temperatures);
+    		if(bool == false)
+    			throw std::invalid_argument("The Temperature array is not increasing monotonically")<<std::endl;
+    	}
+    	catch(std::invalid_argument& e){
+    		std:cerr<<"The input temperature array has issues : "<<e.what()<<std::endl;
+    		return 1;
+    	}
+    	*/
+    	for(std::size_t i=0;i<temperatures.size();++i){
+    		try{
+    			D = ArrheniusModel::diffusivity(temperatures[i]);
+    		}
+    		catch(std::invalid_argument& e){
+    			std::cerr<<e.what()<<std::endl;
+    		}
+    		Diffusivities.push_back(D);
+    	}
+    	return Diffusivities;
+    }
+    	 
 	 
 	

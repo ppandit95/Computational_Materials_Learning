@@ -1,28 +1,97 @@
+#pragma once
+
+#include <vector>
+
 /**
- * @brief Class that with public function that computes diffusivity from the Arrhenius relation.
+ * @brief Represents an Arrhenius diffusivity model.
  *
- * Evaluates
+ * Stores the parameters required for the Arrhenius relation
+ *
  * @f[
- * D = D_0 \exp\left(-\frac{Q}{RT}\right).
+ * D(T) = D_0 \exp\left(-\frac{Q}{RT}\right)
  * @f]
  *
- * @param T Absolute temperature in K. Must be greater than 0.
- * @param D0 Pre-exponential factor in m^2/s.
- * @param Q Activation energy in J/mol.
- * @param R Gas constant in J/(mol K).
- * @param temperatures Absolute temperature range in K.Must be greater than 0.
+ * and provides scalar and batch diffusivity evaluation.
  *
- * @return Diffusivity in m^2/s.
- *
+ * The model enforces physically meaningful parameter values
+ * during construction.
  */
 class ArrheniusModel
 {
-	public:
-		ArrheniusModel(double D0,double Q,double R);
-		double diffusivity(double T) const;
-		std::vector<double> diffusivities(const std::vector<double>& temperatures) const;
-	private:
-	double D0_;
-	double Q_;
-	double R_;
+public:
+
+    /**
+     * @brief Constructs an Arrhenius diffusivity model.
+     *
+     * @param D0 Pre-exponential factor in m^2/s. Must be greater than 0.
+     * @param Q Activation energy in J/mol. Must be greater than or equal to 0.
+     * @param R Gas constant in J/(mol K). Must be greater than 0.
+     *
+     * @throws std::invalid_argument If D0 <= 0, Q < 0, or R <= 0.
+     */
+    ArrheniusModel(double D0, double Q, double R);
+
+
+    /**
+     * @brief Computes the diffusivity at a single temperature.
+     *
+     * Evaluates
+     * @f[
+     * D(T) = D_0 \exp\left(-\frac{Q}{RT}\right).
+     * @f]
+     *
+     * @param T Absolute temperature in K. Must be greater than 0.
+     *
+     * @return Diffusivity in m^2/s.
+     *
+     * @throws std::invalid_argument If T <= 0.
+     */
+    double diffusivity(double T) const;
+
+
+    /**
+     * @brief Computes diffusivities for a sequence of temperatures.
+     *
+     * Each temperature is evaluated using diffusivity().
+     *
+     * @param temperatures Absolute temperatures in K.
+     *                     Every value must be greater than 0.
+     *
+     * @return Diffusivities in m^2/s in the same order as the
+     *         supplied temperatures.
+     *
+     * @throws std::invalid_argument If any temperature is <= 0.
+     */
+    std::vector<double> diffusivities(
+        const std::vector<double>& temperatures) const;
+
+
+    /**
+     * @brief Returns the Arrhenius pre-exponential factor.
+     *
+     * @return Pre-exponential factor D0 in m^2/s.
+     */
+    double pre_exponential_factor() const;
+
+
+    /**
+     * @brief Returns the activation energy of the model.
+     *
+     * @return Activation energy Q in J/mol.
+     */
+    double activation_energy() const;
+
+
+    /**
+     * @brief Returns the gas constant used by the model.
+     *
+     * @return Gas constant R in J/(mol K).
+     */
+    double gas_constant() const;
+
+
+private:
+    double D0_;
+    double Q_;
+    double R_;
 };

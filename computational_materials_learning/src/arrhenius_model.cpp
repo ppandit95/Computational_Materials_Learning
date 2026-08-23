@@ -50,6 +50,15 @@ std::vector<double> ArrheniusModel::diffusivities(
     	}
     	return Diffusivities;
     }
+double ArrheniusModel::pre_exponential_factor() const{
+	return D0_;
+}
+double ArrheniusModel::activation_energy() const{
+	return Q_;
+}
+double ArrheniusModel::gas_constant() const{
+	return R_;
+}
     	 
 	 
 	

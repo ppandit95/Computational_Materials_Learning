@@ -88,6 +88,12 @@ int main(){
 
     		++failures;
 	}
+	ArrheniusModel model_a(1.0e-4, 250000.0, 8.314);
+	ArrheniusModel model_b(2.0e-4, 200000.0, 8.314);
+	if(!(model_a = model_b)){
+		std::cerr<<"The immutability of private data members is not guaranteed"<<std::endl;
+		++failures;
+	}
 	if (failures == 0)
 	{
     		std::cout << "All tests passed.\n";

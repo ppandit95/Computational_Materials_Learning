@@ -88,10 +88,16 @@ public:
      * @return Gas constant R in J/(mol K).
      */
     double gas_constant() const;
-
+    
+    /**
+     * @brief Campare two ArrheniusModel Objects by comparing their data members
+     *
+     * @return Gas wheter two ArrheniusModel objects are equal or not
+     */
+    bool operator=(const ArrheniusModel& b); 
 
 private:
-    double D0_;
-    double Q_;
-    double R_;
+    const double D0_;
+    const double Q_;
+    const double R_;
 };

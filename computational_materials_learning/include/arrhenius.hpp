@@ -100,4 +100,4 @@ bool is_monotonically_non_decreasing(
 bool approximately_equal(
     double a,
     double b,
-    double relative_tolerance);
+    double relative_tolerance=1.0e-6);

@@ -14,6 +14,14 @@ ArrheniusModel::ArrheniusModel(double D0,double Q,double R):D0_(D0),Q_(Q),R_(R){
 	if(R<0.0)
 		throw std::invalid_argument("Gas Constant can never be negative.");
 }
+ArrheniusModel::ArrheniusModel(
+    const ArrheniusParameters& parameters)
+    : ArrheniusModel(
+          parameters.D0,
+          parameters.Q,
+          parameters.R)
+{
+}
 double ArrheniusModel::diffusivity(double T) const{
 	if(T< 0.0 || approximately_equal(T,0.0,1.0e-6)){
 	 	throw std::invalid_argument("The provided temperature is Negative.");

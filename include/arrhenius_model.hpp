@@ -1,7 +1,18 @@
 #pragma once
 
 #include <vector>
-
+     /* @brief Structure to store parameters required to calculate diffusivities via Arrhenius Law
+     *
+     * @param Pre-exponential factor D0 in m^2/s.
+     * @param Activation energy Q in J/mol.
+     * @param Gas constant R in J/(mol K).
+     */
+struct ArrheniusParameters
+{
+    double D0;
+    double Q;
+    double R;
+};
 /**
  * @brief Represents an Arrhenius diffusivity model.
  *
@@ -30,6 +41,7 @@ public:
      * @throws std::invalid_argument If D0 <= 0, Q < 0, or R <= 0.
      */
     ArrheniusModel(double D0, double Q, double R);
+    ArrheniusModel(const ArrheniusParameters& parameters);
 
 
     /**
@@ -101,3 +113,5 @@ private:
     const double Q_;
     const double R_;
 };
+
+

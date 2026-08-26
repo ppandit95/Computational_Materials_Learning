@@ -5,7 +5,11 @@
 #include "arrhenius.hpp"
 #include "arrhenius_model.hpp"
 
-
+double diffusivity_at_1000K(
+    const ArrheniusModel& model)
+{
+    return model.diffusivity(1000.0);
+}
 int main()
 {
     const double D0 = 1.0e-4;
@@ -382,7 +386,7 @@ int main()
             -8.314
         };
 
-        ArrheniusModel bad_model(
+        const ArrheniusModel bad_model(
             bad_parameters
         );
 
@@ -398,7 +402,23 @@ int main()
             << e.what()
             << '\n';
     }
+    // -------------------------------------------------------------------------
+    // Case 12: Checking eplicit behaviour of helper function
+    // -------------------------------------------------------------------------
 
+    std::cout
+        << "---------------- Case 12: Explicit behaviour of Helper Function ----------------\n";
+        /*const ArrheniusParameters parameters{
+    		1.0e-4,
+    		250000.0,
+    		8.314
+	};*/
+	ArrheniusModel model_12(parameters);
+	const double value = diffusivity_at_1000K(model_12);
+	if(!approximately_equal(value,model_12.diffusivity(1000.0))){
+		std::cerr<<"FAIL:The values of helper function and model function are not same"<<std::endl;
+		++failures;
+	}
 
     // -------------------------------------------------------------------------
     // Final result

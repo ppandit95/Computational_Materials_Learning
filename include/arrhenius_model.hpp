@@ -36,12 +36,17 @@ public:
      * @param D0 Pre-exponential factor in m^2/s. Must be greater than 0.
      * @param Q Activation energy in J/mol. Must be greater than or equal to 0.
      * @param R Gas constant in J/(mol K). Must be greater than 0.
+     * @throws std::invalid_argument If D0 <= 0, Q < 0, or R <= 0.
+     */
+    ArrheniusModel(double D0, double Q, double R);
+    /**
+     * @brief Alternative Constructor to construct an Arrhenius diffusivity model using a structure which stores parameters
+     * @param parameters - an object of structure ArrheniusParameters which stores D0,Q,R
      * @note The explicit specifier prevents this constructor from being
      *       used for implicit conversion from ArrheniusParameters to
      *       ArrheniusModel.
      * @throws std::invalid_argument If D0 <= 0, Q < 0, or R <= 0.
      */
-    ArrheniusModel(double D0, double Q, double R);
     explicit ArrheniusModel(const ArrheniusParameters& parameters);
 
 

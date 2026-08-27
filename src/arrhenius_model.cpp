@@ -8,12 +8,15 @@ ArrheniusModel::ArrheniusModel(double D0,double Q,double R):D0_(D0),Q_(Q),R_(R){
 	if(D0 < 0.0 )
 		throw std::invalid_argument("Pre-Exponential Factor is Negative.");
 	if(Q < 0.0)
-		throw std::invalid_argument("Activation Energy is Negative.");
-
-	
+		throw std::invalid_argument("Activation Energy is Negative.");	
 	if(R<0.0)
 		throw std::invalid_argument("Gas Constant can never be negative.");
+	if(approximately_equal(D0,0.0))
+		throw std::invalid_argument("Pre-Exponential Factor is Zero which is UnPhysical");
+	if(approximately_equal(R,0.0))
+		throw std::invalid_argument("Gas Constant is Zero which is UnPhysical");
 }
+
 ArrheniusModel::ArrheniusModel(
     const ArrheniusParameters& parameters)
     : ArrheniusModel(
@@ -23,6 +26,8 @@ ArrheniusModel::ArrheniusModel(
 {
 }
 double ArrheniusModel::diffusivity(double T) const{
+	if(approximately_equal(T,0.0))
+		throw std::invalid_argument("Temperature is Zero K wherein arhenius Law bound to fail.");
 	if(T< 0.0 || approximately_equal(T,0.0,1.0e-6)){
 	 	throw std::invalid_argument("The provided temperature is Negative.");
 	 }

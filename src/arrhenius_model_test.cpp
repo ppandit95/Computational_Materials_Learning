@@ -419,7 +419,93 @@ int main()
 		std::cerr<<"FAIL:The values of helper function and model function are not same"<<std::endl;
 		++failures;
 	}
+    // -------------------------------------------------------------------------
+    // Case 13: Checking for boundary case when D0=0
+    // -------------------------------------------------------------------------
+    std::cout<< "---------------- Case 13: Checking for boundary cases when D0=0----------------\n";
+    ArrheniusParameters parameters_13{
+    		0.0,
+    		250000.0,
+    		8.314
+    };
 
+    try{
+    	ArrheniusModel model_13(parameters_13);
+    }
+    catch(std::invalid_argument& e){
+		std::cerr<<"FAIL:Unable to create Arrhenius Model object."<<std::endl;
+		++failures;
+    }
+    // -------------------------------------------------------------------------
+    // Case 14: Checking for boundary case when R=0
+    // -------------------------------------------------------------------------
+    std::cout<< "---------------- Case 14: Checking for boundary case when R=0----------------\n";
+    ArrheniusParameters parameters_14{
+    		1.0e-4,
+    		250000.0,
+    		0.0
+    };
+
+    try{
+    	ArrheniusModel model_14(parameters_14);
+    }
+    catch(std::invalid_argument& e){
+		std::cerr<<"FAIL:Unable to create Arrhenius Model object."<<std::endl;
+		++failures;
+    }
+    // -------------------------------------------------------------------------
+    // Case 15: Checking for boundary case when T=0
+    // -------------------------------------------------------------------------
+    std::cout<< "---------------- Case 15: Checking for boundary case when T=0----------------\n";
+    ArrheniusParameters parameters_15{
+    		1.0e-4,
+    		250000.0,
+    		8.314
+    };
+
+    try{
+    	ArrheniusModel model_15(parameters_15);
+    	double Diffusivity = model_15.diffusivity(0.0);
+    }
+    catch(std::invalid_argument& e){
+		std::cerr<<"FAIL:Diffusivity cant be calculated for 0K with Arrhenius Law"<<std::endl;
+		++failures;
+    }
+    // -------------------------------------------------------------------------
+    // Case 16: positive regression test at a scientifically reasonable temperature
+    // -------------------------------------------------------------------------
+    std::cout<< "---------------- Case 16: positive regression test at a scientifically reasonable temperature----------------\n";
+    ArrheniusParameters parameters_16{
+    		1.0e-4,
+    		250000.0,
+    		8.314
+    };
+
+    ArrheniusModel model_16(parameters_16);
+    double Diff1 = model_16.diffusivity(1200.0);
+    double Diff2 = arrhenius_diffusivity(1200.0,1.0e-4,250000.0,8.314);
+    if(!approximately_equal(Diff1,Diff2,1.0e-12)){
+    	std::cerr<<"The Diffusivities calculated with scalar function isnt equal to class function calculation."<<std::endl;
+    	++failures;
+    	}
+    // -------------------------------------------------------------------------
+    // Case 17: Validating Struct Constructor behavior
+    // -------------------------------------------------------------------------
+    std::cout<< "---------------- Case 17: Validating Struct Constructor behavior----------------\n";
+    ArrheniusParameters parameters_17{
+    		0.0,
+    		250000.0,
+    		0.0
+    };
+
+    try{
+    	ArrheniusModel model_17(parameters_17);
+    	//double Diffusivity = model_15.diffusivity(0.0);
+    }
+    catch(std::invalid_argument& e){
+		std::cerr<<"FAIL:Unable to create Arrhenius Model Object"<<std::endl;
+		++failures;
+    }
     // -------------------------------------------------------------------------
     // Final result
     // -------------------------------------------------------------------------

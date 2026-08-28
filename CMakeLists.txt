@@ -100,3 +100,25 @@ add_test(
     NAME unit_test_3
     COMMAND ./arrhenius_model_test
 )
+#############Temperature Grid Library and its test######################################
+add_library(temperature_grid STATIC
+    src/temperature_grid.cpp
+    include/temperature_grid.hpp
+)
+target_link_libraries(temperature_grid
+    PRIVATE arrhenius	
+)
+add_executable(temperature_grid_test src/temperature_grid_test.cpp)
+target_compile_options(temperature_grid_test PRIVATE
+	-fsanitize=address,undefined
+	-fno-omit-frame-pointer
+	)
+target_link_options(temperature_grid_test PRIVATE
+	-fsanitize=address,undefined
+	)
+target_include_directories(temperature_grid PUBLIC /home/pushkar/computational_materials_learning/include)
+target_link_libraries(temperature_grid_test PRIVATE temperature_grid)
+add_test(
+    NAME unit_test_4
+    COMMAND ./temperature_grid_test
+)

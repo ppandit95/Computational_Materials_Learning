@@ -122,3 +122,30 @@ add_test(
     NAME unit_test_4
     COMMAND ./temperature_grid_test
 )
+#####################################Scientific Workspace and its tests##############################################33
+add_library(scientific_workspace STATIC
+    src/scientific_workspace.cpp
+    include/scientific_workspace.hpp
+)
+
+target_include_directories(
+    scientific_workspace
+    PUBLIC
+    /home/pushkar/computational_materials_learning/include
+)
+
+add_executable(
+    scientific_workspace_test
+    src/scientific_workspace_test.cpp
+)
+
+target_link_libraries(
+    scientific_workspace_test
+    PRIVATE
+    scientific_workspace arrhenius
+)
+
+add_test(
+    NAME unit_test_5
+    COMMAND scientific_workspace_test
+)

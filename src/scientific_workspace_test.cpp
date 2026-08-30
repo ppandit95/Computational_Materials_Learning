@@ -61,6 +61,81 @@ int main(){
 	else{
     		++failures;
 	}
+	std::cout<< "----------------------------------------"<< "Case 6: Deep Copy handling of Scientific Workspace Class"<< "----------------------------------\n";
+        Scientific_Workspace a_6(3);
+
+        a_6[0] = 10.0;
+        a_6[1] = 20.0;
+        a_6[2] = 30.0;
+
+        Scientific_Workspace b_6 = a_6;
+
+        if (b_6.size() != a_6.size()) {
+    		std::cerr << "FAIL: copied workspace has incorrect size.\n";
+    		++failures;
+	}
+
+        for (std::size_t i = 0; i < a_6.size(); ++i) {
+    		std::cout<< "a[" << i << "] = " << a_6[i]<< ", b[" << i << "] = " << b_6[i]<< '\n';
+    	if (a_6[i] != b_6[i]) {
+        	std::cerr<< "FAIL: copied value differs at index "<< i << '\n';
+        	++failures;
+    		}
+	}
+	b_6[0] = 999.0;
+	if (a_6[0] != 10.0) {
+    		std::cerr << "FAIL: modifying copy changed original.\n";
+    		++failures;
+	}
+	if (b_6[0] != 999.0) {
+    		std::cerr << "FAIL: copied workspace was not modified correctly.\n";
+    		++failures;
+	}
+	std::cout<< "----------------------------------------"<< "Case 7: Deep Copy handling of Scientific Workspace Class with Different Sizes"<< "----------------------------------\n";
+        Scientific_Workspace a_7(3);
+
+        a_7[0] = 10.0;
+        a_7[1] = 20.0;
+        a_7[2] = 30.0;
+
+        Scientific_Workspace b_7(7);
+        b_7 = a_7;
+
+        if (b_7.size() != a_7.size()) {
+    		std::cerr << "FAIL: copied workspace has incorrect size.\n";
+    		++failures;
+	}
+
+        for (std::size_t i = 0; i < a_7.size(); ++i) {
+    		std::cout<< "a[" << i << "] = " << a_7[i]<< ", b[" << i << "] = " << b_7[i]<< '\n';
+    	if (a_7[i] != b_7[i]) {
+        	std::cerr<< "FAIL: copied value differs at index "<< i << '\n';
+        	++failures;
+    		}
+	}
+	b_7[0] = 999.0;
+	if (a_7[0] != 10.0) {
+    		std::cerr << "FAIL: modifying copy changed original.\n";
+    		++failures;
+	}
+	if (b_7[0] != 999.0) {
+    		std::cerr << "FAIL: copied workspace was not modified correctly.\n";
+    		++failures;
+	}
+	std::cout<< "----------------------------------------"<< "Case 8: Deep Copy handling of Scientific Workspace Class for Self Assignment"<< "----------------------------------\n";
+        Scientific_Workspace a_8(3);
+
+        a_8[0] = 10.0;
+        a_8[1] = 20.0;
+        a_8[2] = 30.0;
+	try{
+		a_8 = a_8;
+	}
+	catch(std::invalid_argument& e){
+		std::cerr<<"FAIL:Self Assignment of 2 Objects isnt working properly"<<std::endl;
+		++failures;
+	}
+	
 	if(failures == 0){
 		std::cout<<"Verdict::All tests passed."<<std::endl;
 		return 0;

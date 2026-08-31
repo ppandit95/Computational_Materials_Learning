@@ -7,7 +7,7 @@
 		double R = 8.314;
 		int T[4] = {1000,1100,1200,1300};
 		double D[4];
-		double scientific_check_failed = 0.0;
+		int scientific_check_failed = 0;
 		for(int i=0;i<4;i++)
 		{
 			D[i] = D0*std::exp(-Q/(R*T[i]));
@@ -19,7 +19,7 @@
 					std::cout<<"The Diffusivity seems to follow the trend at position "<< i <<std::endl;
 				else{
 					std::cout<<"There seems to be issues physics that needs to be looked into."<<std::endl;
-					scientific_check_failed = 1.0;
+					scientific_check_failed = 1;
 				}
 				std::cout<<"--------------------------------------------------------------"<<std::endl;
 			}

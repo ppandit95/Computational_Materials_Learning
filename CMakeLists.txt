@@ -122,7 +122,7 @@ add_test(
     NAME unit_test_4
     COMMAND ./temperature_grid_test
 )
-#####################################Scientific Workspace and its tests##############################################33
+#####################################Scientific Workspace and its tests##############################################
 add_library(scientific_workspace STATIC
     src/scientific_workspace.cpp
     include/scientific_workspace.hpp
@@ -139,6 +139,7 @@ add_executable(
     src/scientific_workspace_test.cpp
 )
 
+
 target_link_libraries(
     scientific_workspace_test
     PRIVATE
@@ -148,4 +149,39 @@ target_link_libraries(
 add_test(
     NAME unit_test_5
     COMMAND scientific_workspace_test
+)
+#####################################Adding DocTest through FetchContent Mechanism################################################
+include(FetchContent)
+
+FetchContent_Declare(
+    doctest
+    GIT_REPOSITORY https://github.com/doctest/doctest.git
+    GIT_TAG        v2.4.12
+)
+
+FetchContent_MakeAvailable(doctest)
+
+add_executable(
+    scientific_workspace_doctest
+    tests/scientific_workspace_doctest.cpp
+)
+target_compile_options(scientific_workspace_doctest PRIVATE
+	-fsanitize=address,undefined
+	-fno-omit-frame-pointer
+	)
+
+target_link_libraries(
+    scientific_workspace_doctest
+    PRIVATE
+        scientific_workspace
+        doctest::doctest
+)
+
+target_link_options(scientific_workspace_doctest PRIVATE
+	-fsanitize=address,undefined
+	)
+	
+add_test(
+    NAME scientific_workspace_doctest
+    COMMAND scientific_workspace_doctest
 )

@@ -185,3 +185,10 @@ add_test(
     NAME scientific_workspace_doctest
     COMMAND scientific_workspace_doctest
 )
+#################################################Addin workspace_algorithms_doctest to calculate sum##############################
+add_executable(workspace_algorithms_doctest tests/workspace_algorithms_doctest.cpp)
+target_link_libraries(workspace_algorithms_doctest PRIVATE scientific_workspace doctest::doctest)
+target_compile_options(workspace_algorithms_doctest PRIVATE -fsanitize=address,undefined -fno-omit-frame-pointer)
+target_link_options(workspace_algorithms_doctest PRIVATE -fsanitize=address,undefined)
+add_test(NAME workspace_algorithms_doctest COMMAND workspace_algorithms_doctest)
+

@@ -30,6 +30,10 @@ TEST_CASE("sum of an empty compatible container is zero"){
 	const std::vector<double> values;
 	CHECK(sum(values) == doctest::Approx(0.0));
 }
+TEST_CASE("Sum handles floating point arithmatic with tolerance"){
+	const std::vector<double> values{0.1,0.2,0.3};
+	CHECK(sum(values) == doctest::Approx(0.6));
+}
 TEST_CASE("Mean computes the average of Scientific Workspace Object"){
 	Scientific_Workspace values(4);
 	values[0] = 2.0;
@@ -49,6 +53,15 @@ TEST_CASE("Mean handles signed values"){
 TEST_CASE("Mean rejects an empty container"){
 	const std::vector<double> values;
 	CHECK_THROWS_WITH_AS(mean(values),"mean requires at least one value",std::invalid_argument);
+}
+TEST_CASE("Mean is invariant under permutation of the input values"){
+	const std::vector<double> values{1.0,2.0,3.0,4.0};
+	const std::vector<double> permuted_values{4.0,3.0,2.0,1.0};
+	CHECK(mean(values)==doctest::Approx(mean(permuted_values)));
+}
+TEST_CASE("Mean of 1 value equals that value"){
+	const std::vector<double> values{42.0};
+	CHECK(mean(values)==doctest::Approx(42.0));
 }
 
 

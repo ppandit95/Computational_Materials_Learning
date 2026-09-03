@@ -8,7 +8,7 @@
  *The container must provide size() and read-only operator[] access
  *
  *@tparam Container Type of the input container
- *@param values Container containing the values to sum
+ *@tparam values Container containing the values to sum
  *@return Sum of all values in the container
  *
  *@note Accumulation is performed in double precision
@@ -27,7 +27,7 @@ double sum(const Container& values){
  * The container must provide size() and read-only operator[] access.
  *
  * @tparam Container Type of the input container.
- * @param values Container containing the values.
+ * @tparam values Container containing the values.
  * @return Arithmetic mean of the values.
  *
  * @throws std::invalid_argument if the container is empty.

@@ -8,7 +8,7 @@
  *The container must provide size() and read-only operator[] access
  *
  *@tparam Container Type of the input container
- *@tparam values Container containing the values to sum
+ *@param  values Container containing the values to sum
  *@return Sum of all values in the container
  *
  *@note Accumulation is performed in double precision
@@ -27,7 +27,7 @@ double sum(const Container& values){
  * The container must provide size() and read-only operator[] access.
  *
  * @tparam Container Type of the input container.
- * @tparam values Container containing the values.
+ * @param  values Container containing the values.
  * @return Arithmetic mean of the values.
  *
  * @throws std::invalid_argument if the container is empty.
@@ -46,5 +46,21 @@ double mean(const Container& values)
 
     return sum(values) /
            static_cast<double>(values.size());
+}
+/*
+ * @brief Applies a unary operation to each element of a container in place.
+ *
+ * The container must provide size() and operator[] access.
+ *
+ * @tparam Container Type of the input container.
+ * @tparam Operation Type of the unary operation to apply.
+ * @param values Container containing the values to transform.
+ * @param operation Unary operation to apply to each element.
+ */
+template<typename Container,typename Operation>
+void transform_in_place(Container& values,Operation operation){
+    for(std::size_t i=0;i<values.size();++i){
+        values[i] = operation(values[i]);
+    }
 }
 #endif 

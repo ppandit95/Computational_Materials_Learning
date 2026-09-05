@@ -63,4 +63,26 @@ void transform_in_place(Container& values,Operation operation){
         values[i] = operation(values[i]);
     }
 }
+/*
+ * @brief Applies a unary operation to each element of a container thereby predicting a prescribed condition.
+ *
+ * The container must provide size() and operator[] access.
+ *
+ * @tparam Container Type of the input container.
+ * @tparam Operation Type of the unary operation to apply.
+ * @param value Container containing the values to transform.
+ * @param Predicate Unary operation to apply to each element for comparison.
+ * @note Container is not modified by the template function.
+ */
+template<typename Container,typename Predicate>
+std::size_t count_if(const Container& value,Predicate predicate){
+    std::size_t count = 0;
+    for(std::size_t i=0;i<value.size();++i){
+        if(predicate(value[i])){
+            ++count;
+        }
+    }
+    return count;
+    
+}
 #endif 

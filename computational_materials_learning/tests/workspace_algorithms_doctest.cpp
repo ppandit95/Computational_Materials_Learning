@@ -82,3 +82,23 @@ TEST_CASE("Transform_in_place works with Scientific Workspace to convert Tempera
   CHECK(values[1] == doctest::Approx(373.15));
   CHECK(values[2] == doctest::Approx(773.15)); 
 }
+TEST_CASE("Check for positive values within a vector using count_if template function"){
+  std::vector<double> values{-1.0,2.0,-3.0,4.0};
+  auto count_positive = count_if(values, [](double x){return x > 0.0;});
+  CHECK(count_positive == 2);
+}
+TEST_CASE("Check for temperatures above 1000K in Scientific WorkSpace Object using count_if template function"){
+  Scientific_Workspace values(4);
+  values[0] = 900.0;
+  values[1] = 1050.0;
+  values[2] = 1200.0;
+  values[3] = 750.0;
+  const double threshold_kelvin = 1000.0;
+  auto count_high_temp = count_if(values, [threshold_kelvin](double temperature){return temperature > threshold_kelvin;});
+  CHECK(count_high_temp == 2);
+}
+TEST_CASE("Check how count_if template function handles empty container"){
+  std::vector<double> values;
+  auto count_positive = count_if(values, [](double x){return x > 0.0;});
+  CHECK(count_positive == 0);
+}

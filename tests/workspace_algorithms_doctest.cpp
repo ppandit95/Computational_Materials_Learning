@@ -93,12 +93,41 @@ TEST_CASE("Check for temperatures above 1000K in Scientific WorkSpace Object usi
   values[1] = 1050.0;
   values[2] = 1200.0;
   values[3] = 750.0;
-  const double threshold_kelvin = 1000.0;
-  auto count_high_temp = count_if(values, [threshold_kelvin](double temperature){return temperature > threshold_kelvin;});
+  const double critical_temperature_kelvin = 1000.0;
+  auto count_high_temp = count_if(values, [critical_temperature_kelvin](double temperature){return temperature > critical_temperature_kelvin;});
   CHECK(count_high_temp == 2);
 }
 TEST_CASE("Check how count_if template function handles empty container"){
   std::vector<double> values;
   auto count_positive = count_if(values, [](double x){return x > 0.0;});
   CHECK(count_positive == 0);
+}
+TEST_CASE("Check whether all matching elements are counted using count_if template function"){
+  std::vector<double> values{1.0,2.0,3.0,4.0};
+  auto count_positive = count_if(values, [](double x){return x > 0.0;});
+  CHECK(count_positive == values.size());
+}
+TEST_CASE("Check whether zero size Scientific Workspace is handled with count_if template function"){
+  Scientific_Workspace values(0);
+  auto count_positive = count_if(values, [](double x){return x > 0.0;});
+  CHECK(count_positive == 0);
+}
+TEST_CASE("Check whether count_if mutates the input array or not"){
+  std::vector<double> temperatures{900.0,1050.0,1200.0,750.0};
+  const auto original = temperatures;
+  auto count_positive = count_if(temperatures, [](double x){return x > 0.0;});
+  CHECK(original[0] == doctest::Approx(900.0));
+  CHECK(original[1] == doctest::Approx(1050.0));
+  CHECK(original[2] == doctest::Approx(1200.0));
+  CHECK(original[3] == doctest::Approx(750.0));
+  CHECK(temperatures == original);
+}
+TEST_CASE(
+    "count_if excludes values equal to strict threshold"
+){
+  std::vector<double> values{1.0, 2.0, 3.0, 4.0};
+  const double threshold = 2.5;
+  auto count_above_threshold = count_if(
+      values, [threshold](double x) { return x > threshold; });
+  CHECK(count_above_threshold == 2);
 }

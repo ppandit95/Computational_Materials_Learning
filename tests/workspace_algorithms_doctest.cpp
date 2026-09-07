@@ -131,3 +131,32 @@ TEST_CASE(
       values, [threshold](double x) { return x > threshold; });
   CHECK(count_above_threshold == 2);
 }
+TEST_CASE("Construct a stateful predicate to count values above a threshold using count_if template function"){
+  std::vector<double> temperatures{900.0,1050.0,1200.0,750.0};
+  const double threshold = 1000.0;
+  std::size_t evaluations = 0;
+  const auto predicate =[&evaluations](double temperature){++evaluations; return temperature > 1000.0;};
+  auto count_above_threshold = count_if(temperatures,predicate);
+  CHECK(count_above_threshold == 2);
+  CHECK(evaluations == temperatures.size());
+}
+TEST_CASE("Delibrate Compiler Diagnostic:captured-by-value lambda in count_if template function"){
+  std::vector<double> temperatures{900.0,1050.0,1200.0,750.0};
+  const double threshold = 1000.0;
+  std::size_t evaluations = 0;
+  const auto predicate =[evaluations](double temperature)mutable {++evaluations; return temperature > 1000.0;};
+  auto count_above_threshold = count_if(temperatures,predicate);
+  CHECK(count_above_threshold == 2);
+  CHECK(evaluations == 0);
+}
+TEST_CASE("Cheap Emprical Profiling of count_if template function"){
+  std::vector<double> temperatures(100'0000);
+  for(std::size_t i=0;i<temperatures.size();++i){
+    temperatures[i] = static_cast<double>(i);
+  }
+  std::size_t evaluations = 0;
+  const auto predicate =[&evaluations](double temperature){++evaluations; return temperature > 500000.0;};
+  auto count_above_threshold = count_if(temperatures,predicate);
+  CHECK(count_above_threshold == 499999);
+  CHECK(evaluations == temperatures.size());
+}

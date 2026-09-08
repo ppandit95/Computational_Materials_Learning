@@ -185,10 +185,16 @@ add_test(
     NAME scientific_workspace_doctest
     COMMAND scientific_workspace_doctest
 )
-#################################################Addin workspace_algorithms_doctest to calculate sum##############################
+#################################################Adding workspace_algorithms_doctest to calculate sum##############################
 add_executable(workspace_algorithms_doctest tests/workspace_algorithms_doctest.cpp)
 target_link_libraries(workspace_algorithms_doctest PRIVATE scientific_workspace doctest::doctest)
 target_compile_options(workspace_algorithms_doctest PRIVATE -fsanitize=address,undefined -fno-omit-frame-pointer)
 target_link_options(workspace_algorithms_doctest PRIVATE -fsanitize=address,undefined)
 add_test(NAME workspace_algorithms_doctest COMMAND workspace_algorithms_doctest)
 
+#################################################Adding Benchmark Test for count_if template function##############################
+add_executable(count_if_benchmark benchmarks/count_if_benchmark.cpp)
+target_link_libraries(count_if_benchmark PRIVATE scientific_workspace )
+target_include_directories(count_if_benchmark PRIVATE /home/pushkar/computational_materials_learning/include)
+target_compile_options(count_if_benchmark PRIVATE -fsanitize=address,undefined -fno-omit-frame-pointer)
+target_link_options(count_if_benchmark PRIVATE -fsanitize=address,undefined)

@@ -198,3 +198,13 @@ target_link_libraries(count_if_benchmark PRIVATE scientific_workspace )
 target_include_directories(count_if_benchmark PRIVATE /home/pushkar/computational_materials_learning/include)
 target_compile_options(count_if_benchmark PRIVATE -fsanitize=address,undefined -fno-omit-frame-pointer)
 target_link_options(count_if_benchmark PRIVATE -fsanitize=address,undefined)
+#################################################Adding File Writing Example##############################
+add_executable(write_temperature_csv examples/write_temperature_csv.cpp)
+target_link_libraries(write_temperature_csv PRIVATE scientific_workspace)
+target_include_directories(write_temperature_csv PRIVATE /home/pushkar/computational_materials_learning/include)
+#################################################Adding File Tests for I/O Operations##############################
+add_executable(workspace_io_doctest tests/workspace_io_doctest.cpp)
+target_link_libraries(workspace_io_doctest PRIVATE scientific_workspace doctest::doctest)
+target_compile_options(workspace_io_doctest PRIVATE -fsanitize=address,undefined -fno-omit-frame-pointer)
+target_link_options(workspace_io_doctest PRIVATE -fsanitize=address,undefined)
+add_test(NAME workspace_io_doctest COMMAND workspace_io_doctest)

@@ -208,3 +208,7 @@ target_link_libraries(workspace_io_doctest PRIVATE scientific_workspace doctest:
 target_compile_options(workspace_io_doctest PRIVATE -fsanitize=address,undefined -fno-omit-frame-pointer)
 target_link_options(workspace_io_doctest PRIVATE -fsanitize=address,undefined)
 add_test(NAME workspace_io_doctest COMMAND workspace_io_doctest)
+#################################################Writing Field Data to CSV##############################
+add_executable(write_field_csv examples/write_field_csv.cpp)
+target_link_libraries(write_field_csv PRIVATE scientific_workspace)
+target_include_directories(write_field_csv PRIVATE /home/pushkar/computational_materials_learning/include)

@@ -24,3 +24,32 @@ TEST_CASE("Input Vector is not modified by write_csv") {
   CHECK(values == original_values); // Check that the original values are unchanged
   std::remove("test_output.csv");
 }
+TEST_CASE("Successful Coordinate Filed Output with 3 Entries") {
+  std::vector<double> coordinates = {0.0, 1.0, 2.0};
+  std::vector<double> field_values = {10.0, 20.0, 30.0};
+  CHECK_NOTHROW(write_field_csv(coordinates, field_values, "test_field_output.csv"));
+  std::ifstream file("test_field_output.csv");
+  CHECK(file.is_open());
+  std::string line;
+  std::getline(file, line);
+  CHECK(line == "x,field_value");
+  file.close();
+  std::remove("test_field_output.csv");
+}
+TEST_CASE("Mismatched Field Size and Coordinate Size") {
+  std::vector<double> coordinates = {0.0, 1.0};
+  std::vector<double> field_values = {10.0, 20.0, 30.0};
+  CHECK_THROWS_AS(write_field_csv(coordinates, field_values, "test_field_output.csv"),std::runtime_error);
+}
+TEST_CASE("Empty but Compatible Inpute to write_field_csv") {
+  std::vector<double> coordinates;
+  std::vector<double> field_values;
+  write_field_csv(coordinates, field_values, "test_field_output.csv");
+  std::ifstream file("test_field_output.csv");
+  CHECK(file.is_open());
+  std::string line;
+  std::getline(file, line);
+  CHECK(line == "x,field_value");
+  file.close();
+  std::remove("test_field_output.csv");
+}

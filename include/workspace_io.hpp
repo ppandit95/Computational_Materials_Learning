@@ -58,3 +58,42 @@ void write_field_csv(
       }
 
     }
+/*
+ * @brief Writes a Scientific CSV Document from a 2 field Vectors of Scientific Workspcae Object
+ * The container must provide size() and operator[] access
+ *
+ * @tparam CoordinateContainer Type of the input coordinate container.
+ * @tparam Field1Container Type of the input field container.
+ * @tparam Field2Container Type of the input field container.
+ * @param coordinates Container containing the coordinate values.
+ * @param field1 fieldContainer1 containing the field1 values.
+ * @param field2 fieldContainer2 containing the field2 values.
+ * @param filename Name of the file to write.
+ * @throws std::runtime_error if the file cannot be opened for writing as well as std::invalid_argument if the sizes of the containers do not match.
+ * @note Container is not modified by the template function.Moreover, size of Coordinate should be equal to size of field container, otherwise unphysical scenario is detected and std::runtime_error is thrown.
+ */
+template <
+    typename CoordinateContainer,
+    typename FieldContainer1,
+    typename FieldContainer2>
+void write_two_fields_csv(
+    const CoordinateContainer& coordinates,
+    const FieldContainer1& field1,
+    const FieldContainer2& field2,
+    const std::string& filename){
+      if(coordinates.size() == field1.size() && coordinates.size() == field2.size()){
+        std::ofstream file(filename);
+        if (!file.is_open()) {
+          throw std::runtime_error("Could not open file for writing: " + filename);
+        }
+        file << "x,Concentration,Phi\n";
+        for (std::size_t i = 0; i < coordinates.size(); ++i) {
+          file << coordinates[i] << "," << field1[i] << "," << field2[i] << "\n";
+        }
+        file.close();
+      }
+      else{
+        throw std::invalid_argument(
+    "coordinate and field sizes must match");
+    }
+  }

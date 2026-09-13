@@ -78,3 +78,18 @@ TEST_CASE("Make phi vector too short while coordinates and concentration have th
   std::vector<double> phi = {0.1, 0.2}; // Shorter size
   CHECK_THROWS_AS(write_two_fields_csv(coordinates, concentration, phi, "test_two_field_output.csv"),std::invalid_argument);
 }
+TEST_CASE("Regression Test to check precision for write_field_csv"){
+  std::vector<double> coordinates = {0.0,1.0,2.0,3.0,4.0};
+  std::vector<double> field_values = {1.12345678901234567890,2.12345678901234567890,3.12345678901234567890,4.12345678901234567890,5.12345678901234567890};
+  CHECK_NOTHROW(write_field_csv(coordinates, field_values, "test_field_output.csv"));
+  std::ifstream file("test_field_output.csv");
+  CHECK(file.is_open());
+  std::string line;
+  std::getline(file, line);
+  CHECK(line == "x,field_value");
+  std::getline(file, line);
+  const double tempField = std::stod(line.substr(line.find(",")+1)); // Convert the field value to double
+  CHECK(tempField == 1.12345678901234567890); // Check precision
+  file.close();
+  std::remove("test_field_output.csv");
+}

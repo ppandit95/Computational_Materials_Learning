@@ -11,16 +11,16 @@ add_executable(hello cpp_foundations/hello.cpp)
 add_executable(diffusivity cpp_foundations/diffusivity.cpp)
 add_executable(diagnostic_exercise cpp_foundations/diagnostic_exercise.cpp)
 target_compile_options(diagnostic_exercise PRIVATE
-	-Wall
-	-Wextra
-	-Wpedantic
-	-Wconversion
-	-fsanitize=address,undefined
-	-fno-omit-frame-pointer
-	)
+    -Wall
+    -Wextra
+    -Wpedantic
+    -Wconversion
+    -fsanitize=address,undefined
+    -fno-omit-frame-pointer
+)
 target_link_options(diagnostic_exercise PRIVATE
-	-fsanitize=address,undefined
-	)
+    -fsanitize=address,undefined
+)
 add_library(arrhenius STATIC
     include/arrhenius.hpp
     src/arrhenius.cpp
@@ -28,35 +28,35 @@ add_library(arrhenius STATIC
 ########################################Diagnostic Exercise 2#################################
 add_executable(diagnostic_exercise_new src/diagnostic_exercise.cpp)
 target_compile_options(diagnostic_exercise_new PRIVATE
-	-fsanitize=address,undefined
-	-fno-omit-frame-pointer
-	)
+    -fsanitize=address,undefined
+    -fno-omit-frame-pointer
+)
 target_link_options(diagnostic_exercise_new PRIVATE
-	-fsanitize=address,undefined
-	)
+    -fsanitize=address,undefined
+)
 target_include_directories(arrhenius PUBLIC /home/pushkar/computational_materials_learning/include)
 target_link_libraries(diagnostic_exercise_new PRIVATE arrhenius)
 ############################Monotonicity Test########################################
 add_executable(monotonicity_test src/monotonicity_test.cpp)
 target_compile_options(monotonicity_test PRIVATE
-	-fsanitize=address,undefined
-	-fno-omit-frame-pointer
-	)
+    -fsanitize=address,undefined
+    -fno-omit-frame-pointer
+)
 target_link_options(monotonicity_test PRIVATE
-	-fsanitize=address,undefined
-	)
+    -fsanitize=address,undefined
+)
 target_include_directories(arrhenius PUBLIC /home/pushkar/computational_materials_learning/include)
 target_link_libraries(monotonicity_test PRIVATE arrhenius)
 
 ############################Arrhenius Test########################################
 add_executable(arrhenius_test src/arrhenius_test.cpp)
 target_compile_options(monotonicity_test PRIVATE
-	-fsanitize=address,undefined
-	-fno-omit-frame-pointer
-	)
+    -fsanitize=address,undefined
+    -fno-omit-frame-pointer
+)
 target_link_options(arrhenius_test PRIVATE
-	-fsanitize=address,undefined
-	)
+    -fsanitize=address,undefined
+)
 target_include_directories(arrhenius PUBLIC /home/pushkar/computational_materials_learning/include)
 target_link_libraries(arrhenius_test PRIVATE arrhenius)
 ###############################Adding Tests########################################
@@ -88,12 +88,12 @@ target_link_libraries(arrhenius_model
 )
 add_executable(arrhenius_model_test src/arrhenius_model_test.cpp)
 target_compile_options(arrhenius_model_test PRIVATE
-	-fsanitize=address,undefined
-	-fno-omit-frame-pointer
-	)
+    -fsanitize=address,undefined
+    -fno-omit-frame-pointer
+)
 target_link_options(arrhenius_model_test PRIVATE
-	-fsanitize=address,undefined
-	)
+    -fsanitize=address,undefined
+)
 target_include_directories(arrhenius_model PUBLIC /home/pushkar/computational_materials_learning/include)
 target_link_libraries(arrhenius_model_test PRIVATE arrhenius_model)
 add_test(
@@ -106,16 +106,16 @@ add_library(temperature_grid STATIC
     include/temperature_grid.hpp
 )
 target_link_libraries(temperature_grid
-    PRIVATE arrhenius	
+    PRIVATE arrhenius
 )
 add_executable(temperature_grid_test src/temperature_grid_test.cpp)
 target_compile_options(temperature_grid_test PRIVATE
-	-fsanitize=address,undefined
-	-fno-omit-frame-pointer
-	)
+    -fsanitize=address,undefined
+    -fno-omit-frame-pointer
+)
 target_link_options(temperature_grid_test PRIVATE
-	-fsanitize=address,undefined
-	)
+    -fsanitize=address,undefined
+)
 target_include_directories(temperature_grid PUBLIC /home/pushkar/computational_materials_learning/include)
 target_link_libraries(temperature_grid_test PRIVATE temperature_grid)
 add_test(
@@ -156,7 +156,7 @@ include(FetchContent)
 FetchContent_Declare(
     doctest
     GIT_REPOSITORY https://github.com/doctest/doctest.git
-    GIT_TAG        v2.4.12
+    GIT_TAG v2.4.12
 )
 
 FetchContent_MakeAvailable(doctest)
@@ -166,21 +166,21 @@ add_executable(
     tests/scientific_workspace_doctest.cpp
 )
 target_compile_options(scientific_workspace_doctest PRIVATE
-	-fsanitize=address,undefined
-	-fno-omit-frame-pointer
-	)
+    -fsanitize=address,undefined
+    -fno-omit-frame-pointer
+)
 
 target_link_libraries(
     scientific_workspace_doctest
     PRIVATE
-        scientific_workspace
-        doctest::doctest
+    scientific_workspace
+    doctest::doctest
 )
 
 target_link_options(scientific_workspace_doctest PRIVATE
-	-fsanitize=address,undefined
-	)
-	
+    -fsanitize=address,undefined
+)
+
 add_test(
     NAME scientific_workspace_doctest
     COMMAND scientific_workspace_doctest
@@ -194,7 +194,7 @@ add_test(NAME workspace_algorithms_doctest COMMAND workspace_algorithms_doctest)
 
 #################################################Adding Benchmark Test for count_if template function##############################
 add_executable(count_if_benchmark benchmarks/count_if_benchmark.cpp)
-target_link_libraries(count_if_benchmark PRIVATE scientific_workspace )
+target_link_libraries(count_if_benchmark PRIVATE scientific_workspace)
 target_include_directories(count_if_benchmark PRIVATE /home/pushkar/computational_materials_learning/include)
 target_compile_options(count_if_benchmark PRIVATE -fsanitize=address,undefined -fno-omit-frame-pointer)
 target_link_options(count_if_benchmark PRIVATE -fsanitize=address,undefined)
@@ -212,3 +212,19 @@ add_test(NAME workspace_io_doctest COMMAND workspace_io_doctest)
 add_executable(write_field_csv examples/write_field_csv.cpp)
 target_link_libraries(write_field_csv PRIVATE scientific_workspace)
 target_include_directories(write_field_csv PRIVATE /home/pushkar/computational_materials_learning/include)
+#################################################Writing  2 Fields Data to CSV##############################
+add_executable(write_two_fields_csv examples/write_two_fields_csv.cpp)
+target_link_libraries(write_two_fields_csv PRIVATE scientific_workspace)
+target_include_directories(write_two_fields_csv PRIVATE /home/pushkar/computational_materials_learning/include)
+#################################################Benchmark for Scaling I/O Operations##############################
+
+add_executable(
+    write_field_csv_benchmark
+    benchmarks/write_field_csv_benchmark.cpp
+)
+
+target_include_directories(
+    write_field_csv_benchmark
+    PRIVATE
+    /home/pushkar/computational_materials_learning/include
+)

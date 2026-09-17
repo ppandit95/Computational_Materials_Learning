@@ -1,0 +1,41 @@
+# Python virtual environments
+.venv/
+venv/
+
+# Python generated files
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# CMake / build directories
+build/
+build-*/
+cmake-build-*/
+
+# CTest generated files
+Testing/
+
+# Generated documentation
+docs/html/
+docs/latex/
+
+# Marimo generated state
+marimo/__marimo__/
+
+# Generated benchmark / example data
+benchmark_output.csv
+temperatures.csv
+benchmarks/csv_io_scaling.csv
+
+# Executables and compiled objects
+*.o
+*.a
+*.so
+*.exe
+
+# Editor / OS noise
+.DS_Store
+# Marimo generated state
+__marimo__/

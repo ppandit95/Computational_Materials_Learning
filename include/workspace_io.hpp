@@ -37,7 +37,7 @@ void write_csv(const std::string &filename, const Container &values) {
  *
  * @tparam CoordinateContainer Type of the input coordinate container.
  * @tparam FieldContainer Type of the input field container.
- * @param coordinates Container containing the coordinate values.
+ * @param coordinates Container containing the coordinate values in meters
  * @param values Container containing the field values.
  * @param filename Name of the file to write.
  * @throws std::runtime_error if the file cannot be opened for writing.
@@ -74,7 +74,7 @@ void write_field_csv(const CoordinateContainer &coordinates,
  * @tparam CoordinateContainer Type of the input coordinate container.
  * @tparam Field1Container Type of the input field container.
  * @tparam Field2Container Type of the input field container.
- * @param coordinates Container containing the coordinate values.
+ * @param coordinates Container containing the coordinate values in meters
  * @param field1 fieldContainer1 containing the field1 values.
  * @param field2 fieldContainer2 containing the field2 values.
  * @param filename Name of the file to write.

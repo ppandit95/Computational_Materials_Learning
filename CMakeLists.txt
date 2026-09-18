@@ -228,3 +228,34 @@ target_include_directories(
     PRIVATE
     /home/pushkar/computational_materials_learning/include
 )
+##########################################Numerical Foundations Doctest########################################
+add_executable(
+    numerical_foundations_doctest
+    tests/numerical_foundations_doctest.cpp
+)
+target_link_libraries(
+    numerical_foundations_doctest
+    PRIVATE
+    scientific_workspace
+    doctest::doctest
+)
+target_compile_options(
+    numerical_foundations_doctest
+    PRIVATE
+    -fsanitize=address,undefined
+    -fno-omit-frame-pointer
+)
+target_link_options(
+    numerical_foundations_doctest
+    PRIVATE
+    -fsanitize=address,undefined
+)
+add_test(
+    NAME numerical_foundations_doctest
+    COMMAND numerical_foundations_doctest
+)   
+##############################################Numerical Foundations Example########################################
+add_executable(
+    floating_point_demo
+    examples/floating_point_demo.cpp
+)

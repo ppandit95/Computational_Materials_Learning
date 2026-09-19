@@ -259,3 +259,12 @@ add_executable(
     floating_point_demo
     examples/floating_point_demo.cpp
 )
+##############################################Error Norm Example########################################
+add_executable(
+    error_norm_demo
+    examples/error_norm_demo.cpp
+)
+target_include_directories(error_norm_demo
+    PRIVATE
+    /home/pushkar/computational_materials_learning/include
+)

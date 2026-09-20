@@ -129,3 +129,33 @@ TEST_CASE("localized large error")
     CHECK(linf_error(numerical, reference) ==
           doctest::Approx(10.0));
 }
+
+TEST_CASE("Checking Relative L2 Norm with identical nonzero vectors"){
+    const std::vector<double> numerical{1,2,3,4};
+    const std::vector<double> referece{1,2,3,4};
+    CHECK(relative_l2_error(numerical,referece) == doctest::Approx(0.0));
+}
+
+TEST_CASE("Checking Relative L2 Norm with {101,202} vs {100,200}"){
+    const std::vector<double> numerical{101,202};
+    const std::vector<double> reference{100,200};
+    CHECK(relative_l2_error(numerical,reference) == doctest::Approx(0.01));
+}
+
+TEST_CASE("Checking Relative L2 Norm with {101,202} vs {0.0,0.0}"){
+    const std::vector<double> numerical{101,202};
+    const std::vector<double> reference{0.0,0.0};
+    CHECK_THROWS_AS(relative_l2_error(numerical,reference),std::invalid_argument);
+}
+
+TEST_CASE("Checking Relative L2 Norm with Empty Vectors"){
+    const std::vector<double> numerical;
+    const std::vector<double> reference;
+    CHECK_THROWS_AS(relative_l2_error(numerical,reference),std::invalid_argument);
+}
+
+TEST_CASE("Checking Relative L2 Norm with Vectors of Mismatched Sizes"){
+    const std::vector<double> numerical{101,202};
+    const std::vector<double> reference{100,200,300};
+    CHECK_THROWS_AS(relative_l2_error(numerical,reference),std::invalid_argument);
+}

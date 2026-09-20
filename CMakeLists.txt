@@ -268,3 +268,8 @@ target_include_directories(error_norm_demo
     PRIVATE
     /home/pushkar/computational_materials_learning/include
 )
+##################################################Day 45 Recall##############################################
+add_executable(
+    day_45_recall
+    scratch/day45_norm_recall.cpp
+)

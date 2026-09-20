@@ -148,3 +148,50 @@ double linf_error(const std::vector<double>& numerical,
 
     return max_error;
 }
+/**
+ * @brief Computes the relative L2 error between two vectors .
+ *
+ * Computes
+ *
+ *     sqrt(sum_i (numerical[i] - reference[i])^2)/sqrt(sum_i(reference[i])^2)
+ *
+ * This is an relative vector norm. It is not yet a
+ * quadrature approximation of the continuous spatial L2 norm,
+ * which would also involve the grid spacing.
+ *
+ * @param numerical Numerical solution values.
+ * @param reference Reference solution values.
+ * @return Relative L2 error. Returns 0.0 for two empty vectors.
+ * @throws std::invalid_argument if the vector sizes differ as well as if reference vecotr is a zero vector
+ */
+double relative_l2_error(
+    const std::vector<double>& numerical,
+    const std::vector<double>& reference)
+{
+    if (numerical.size() != reference.size()) {
+        throw std::invalid_argument(
+            "The size of 2 vectors should match");
+    }
+
+    if (numerical.empty()) {
+        throw std::invalid_argument("The input arrays are not invalid");
+    }
+    unsigned int count = 0;
+    if(numerical.size() == reference.size()){
+        for(std::size_t i=0;i<numerical.size();++i)
+            if(nearly_equal(reference[i],0.0,1e-6,1e-6))
+                count++;
+    }
+    if(count == reference.size())
+                throw std::invalid_argument("Relative L2 error is undefined for a zero reference norm");
+    double sum = 0.0;
+    double sum1 = 0.0;
+
+    for (std::size_t i = 0; i < numerical.size(); ++i) {
+        const double error = numerical[i] - reference[i];
+        sum1 += reference[i]*reference[i];
+        sum += error * error;
+    }
+
+    return std::sqrt(sum)/std::sqrt(sum1);
+}

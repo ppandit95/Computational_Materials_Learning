@@ -233,12 +233,17 @@ add_executable(
     numerical_foundations_doctest
     tests/numerical_foundations_doctest.cpp
 )
+target_include_directories(numerical_foundations_doctest
+    PRIVATE
+    /home/pushkar/computational_materials_learning/include
+)
 target_link_libraries(
     numerical_foundations_doctest
     PRIVATE
     scientific_workspace
     doctest::doctest
 )
+
 target_compile_options(
     numerical_foundations_doctest
     PRIVATE

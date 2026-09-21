@@ -122,7 +122,7 @@ double l2_error(const std::vector<double>& numerical,
  *
  * @param numerical Numerical solution values.
  * @param reference Reference solution values.
- * @return Maximum absolute error. Returns 0.0 for two empty vectors.
+ * @return Maximum absolute error. Returns 0.0 for two empty vectors as well as when one of the vector consists of NaN 
  * @throws std::invalid_argument if the vector sizes differ.
  */
 double linf_error(const std::vector<double>& numerical,

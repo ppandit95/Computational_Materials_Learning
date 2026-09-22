@@ -174,16 +174,28 @@ TEST_CASE("Checking Scaling Behaviour of Error Norms") {
 
 TEST_CASE("diagnose L2 overflow for very large values") {
   const std::vector<double> numerical{1.0e200, 1.0e200};
+
   const std::vector<double> reference{0.0, 0.0};
+
   const double result = l2_error(numerical, reference);
-  CHECK(std::isinf(result));
+
+  CHECK(std::isfinite(result));
+
+  CHECK(result == doctest::Approx(std::sqrt(2.0) * 1.0e200));
 }
 
 TEST_CASE("Capturing NaN behavior in Error Norms") {
-    const double nan =
-    std::numeric_limits<double>::quiet_NaN();
-    const std::vector<double> numerical{1.0,nan,3.0};
-    const std::vector<double> reference{1.0,2.0,3.0};
-    CHECK(std::isnan(l1_error(numerical,reference)));
-    CHECK(std::isnan(l2_error(numerical,reference)));
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> numerical{1.0, nan, 3.0};
+  const std::vector<double> reference{1.0, 2.0, 3.0};
+  CHECK(std::isnan(l1_error(numerical, reference)));
+  CHECK(std::isnan(l2_error(numerical, reference)));
+}
+
+TEST_CASE("Checking L2 Norm for Extreme Situation") {
+  const std::vector<double> numerical = {1.0e-200, 1.0e-200};
+  const std::vector<double> reference = {0.0, 0.0};
+  auto result = l2_error(numerical,reference);
+  CHECK(result > 0.0);
+  CHECK(result == doctest::Approx(std::sqrt(2.0) * 1.0e-200));
 }

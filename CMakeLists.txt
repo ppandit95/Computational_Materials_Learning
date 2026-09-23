@@ -278,3 +278,17 @@ add_executable(
     day_45_recall
     scratch/day45_norm_recall.cpp
 )
+##################################################Day 47  Stable L2##############################################
+add_executable(
+    day_47_l2
+    scratch/day47_stable_l2.cpp
+)
+##################################################l2 Stability benchmark##############################################
+add_executable(
+    l2_stability_benchmark
+    examples/l2_stability_benchmark.cpp
+)
+target_include_directories(l2_stability_benchmark
+    PRIVATE
+    /home/pushkar/computational_materials_learning/include
+)

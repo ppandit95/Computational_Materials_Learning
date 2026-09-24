@@ -72,7 +72,7 @@ double l1_error(const std::vector<double>& numerical,
 
 
 /**
- * @brief Computes the discrete L2 error between two vectors.
+ * @brief Computes the discrete unweighted L2 error between two vectors.
  *
  * Computes
  *
@@ -86,6 +86,7 @@ double l1_error(const std::vector<double>& numerical,
  * @param reference Reference solution values.
  * @return Discrete L2 error. Returns 0.0 for two empty vectors.
  * @throws std::invalid_argument if the vector sizes differ.
+ * @note the implementation uses scaled sum-of-squares to reduce intermediate overflow/underflow.
  */
 double l2_error(const std::vector<double>& numerical,
                 const std::vector<double>& reference)

@@ -199,3 +199,11 @@ TEST_CASE("Checking L2 Norm for Extreme Situation") {
   CHECK(result > 0.0);
   CHECK(result == doctest::Approx(std::sqrt(2.0) * 1.0e-200));
 }
+
+TEST_CASE("Checking Stable L2 Norm  at Extreme Case"){
+    const std::vector<double> numerical = {1.0e200, 1.0e200};
+  const std::vector<double> reference = {0.0, 0.0};
+  auto result = l2_error(numerical,reference);
+  CHECK(result > 0.0);
+  CHECK(result == doctest::Approx(std::sqrt(2.0) * 1.0e200));
+}

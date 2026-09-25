@@ -195,15 +195,28 @@ TEST_CASE("Capturing NaN behavior in Error Norms") {
 TEST_CASE("Checking L2 Norm for Extreme Situation") {
   const std::vector<double> numerical = {1.0e-200, 1.0e-200};
   const std::vector<double> reference = {0.0, 0.0};
-  auto result = l2_error(numerical,reference);
+  auto result = l2_error(numerical, reference);
   CHECK(result > 0.0);
   CHECK(result == doctest::Approx(std::sqrt(2.0) * 1.0e-200));
 }
 
-TEST_CASE("Checking Stable L2 Norm  at Extreme Case"){
-    const std::vector<double> numerical = {1.0e200, 1.0e200};
+TEST_CASE("Checking Stable L2 Norm  at Extreme Case") {
+  const std::vector<double> numerical = {1.0e200, 1.0e200};
   const std::vector<double> reference = {0.0, 0.0};
-  auto result = l2_error(numerical,reference);
+  auto result = l2_error(numerical, reference);
   CHECK(result > 0.0);
   CHECK(result == doctest::Approx(std::sqrt(2.0) * 1.0e200));
+}
+
+TEST_CASE("Checking Condition Number for various x") {
+  const double x1 = 1.0;
+  const double x2 = 100.0;
+  const double x3 = 1.0e-12;
+  const double x4 = 1.0e12;
+  CHECK(sqrt_relative_condition_number(x1) == doctest::Approx(0.5));
+  CHECK(sqrt_relative_condition_number(x2) == doctest::Approx(0.5));
+  CHECK(sqrt_relative_condition_number(x3) == doctest::Approx(0.5));
+  CHECK(sqrt_relative_condition_number(x4) == doctest::Approx(0.5));
+  CHECK_THROWS_AS(sqrt_relative_condition_number(0.0), std::invalid_argument);
+  CHECK_THROWS_AS(sqrt_relative_condition_number(-1.0), std::invalid_argument);
 }

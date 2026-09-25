@@ -292,3 +292,12 @@ target_include_directories(l2_stability_benchmark
     PRIVATE
     /home/pushkar/computational_materials_learning/include
 )
+##################################################Conditioning Demo ##############################################
+add_executable(
+    conditioning_demo
+    examples/conditioning_demo.cpp
+)
+target_include_directories(conditioning_demo
+    PRIVATE
+    /home/pushkar/computational_materials_learning/include
+)

@@ -301,3 +301,12 @@ target_include_directories(conditioning_demo
     PRIVATE
     /home/pushkar/computational_materials_learning/include
 )
+##################################################Matrix Conditioning Demo ##############################################
+add_executable(
+    matrix_conditioning_demo
+    examples/matrix_conditioning_demo.cpp
+)
+target_include_directories(matrix_conditioning_demo
+    PRIVATE
+    /home/pushkar/computational_materials_learning/include
+)

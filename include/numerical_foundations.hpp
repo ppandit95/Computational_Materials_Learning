@@ -3,6 +3,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
+#include<array>
 
 /**
  * @brief Checks whether two floating-point numbers are nearly equal.
@@ -217,4 +218,53 @@ double sqrt_relative_condition_number(double x) {
     const double fprime = 1.0 / (2.0 * std::sqrt(x));
     return std::abs(x * fprime) / std::abs(f);
   }
+}
+struct Matrix2x2 {
+    double a11;
+    double a12;
+    double a21;
+    double a22;
+};
+double determinant(const Matrix2x2& A){
+  return A.a11*A.a22 - A.a12*A.a21;
+}
+double infinity_norm(const Matrix2x2& A)
+{
+    const double row1 =
+        std::abs(A.a11) + std::abs(A.a12);
+
+    const double row2 =
+        std::abs(A.a21) + std::abs(A.a22);
+
+    return std::max(row1, row2);
+}
+double infinity_norm_vec(const std::array<double,2> b){
+  double max = 0.0;
+  max = std::max(b[0],max);
+  max = std::max(b[1],max);
+  return max;
+}
+
+Matrix2x2 inverse(const Matrix2x2& A)
+{
+    const double det = determinant(A);
+
+    if (det == 0.0) {
+        throw std::invalid_argument(
+            "Matrix is singular and inverse cannot be determined."
+        );
+    }
+
+    Matrix2x2 A_inv;
+
+    A_inv.a11 =  A.a22 / det;
+    A_inv.a12 = -A.a12 / det;
+    A_inv.a21 = -A.a21 / det;
+    A_inv.a22 =  A.a11 / det;
+
+    return A_inv;
+}
+
+double condition_number_inf(const Matrix2x2& A){
+  return infinity_norm(A)*infinity_norm(inverse(A));
 }

@@ -220,3 +220,21 @@ TEST_CASE("Checking Condition Number for various x") {
   CHECK_THROWS_AS(sqrt_relative_condition_number(0.0), std::invalid_argument);
   CHECK_THROWS_AS(sqrt_relative_condition_number(-1.0), std::invalid_argument);
 }
+
+TEST_CASE("Verify Condition Number of Identity Matrix"){
+  Matrix2x2 I;
+  I.a11 = 1.0;
+  I.a12 = 0.0;
+  I.a21 = 0.0;
+  I.a22 = 1.0;
+  CHECK(condition_number_inf(I) == doctest::Approx(1));
+}
+
+TEST_CASE("Verify Inverse Calculation throws invalid argument"){
+  Matrix2x2 S;
+  S.a11 = 1.0;
+  S.a12 = 2.0;
+  S.a21 = 2.0;
+  S.a22 = 4.0;
+  CHECK_THROWS_AS(inverse(S),std::invalid_argument);
+}

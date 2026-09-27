@@ -238,3 +238,18 @@ TEST_CASE("Verify Inverse Calculation throws invalid argument"){
   S.a22 = 4.0;
   CHECK_THROWS_AS(inverse(S),std::invalid_argument);
 }
+
+TEST_CASE("Verifying Scientific Trend Near Singularity"){
+  Matrix2x2 A1;
+  A1.a11 = 1.0;
+  A1.a12 = 1.0;
+  A1.a21 = 1.0;
+  A1.a22 = 1.0 + 1.0e-2;
+  Matrix2x2 A2;
+  A2.a11 = 1.0;
+  A2.a12 = 1.0;
+  A2.a21 = 1.0;
+  A2.a22 = 1.0 + 1.0e-4;
+  CHECK(condition_number_inf(A2) > condition_number_inf(A1));
+  CHECK(condition_number_inf(A2)/condition_number_inf(A1) == doctest::Approx(99.0174));
+}

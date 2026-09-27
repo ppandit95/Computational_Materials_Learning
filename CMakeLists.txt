@@ -310,3 +310,12 @@ target_include_directories(matrix_conditioning_demo
     PRIVATE
     /home/pushkar/computational_materials_learning/include
 )
+##################################################Matrix Conditioning Sweep ##############################################
+add_executable(
+    matrix_conditioning_sweep
+    examples/conditioning_sweep.cpp
+)
+target_include_directories(matrix_conditioning_sweep
+    PRIVATE
+    /home/pushkar/computational_materials_learning/include
+)

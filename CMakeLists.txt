@@ -319,3 +319,12 @@ target_include_directories(matrix_conditioning_sweep
     PRIVATE
     /home/pushkar/computational_materials_learning/include
 )
+##################################################Matrix Conditioning Edge Cases ##############################################
+add_executable(
+    matrix_conditioning_edge_cases
+    examples/matrix_conditioning_edge_cases.cpp
+)
+target_include_directories(matrix_conditioning_edge_cases
+    PRIVATE
+    /home/pushkar/computational_materials_learning/include
+)

@@ -268,3 +268,24 @@ Matrix2x2 inverse(const Matrix2x2& A)
 double condition_number_inf(const Matrix2x2& A){
   return infinity_norm(A)*infinity_norm(inverse(A));
 }
+struct Vector2{
+  double x1;
+  double x2;
+};
+
+Vector2 matvec(const Matrix2x2& A,const Vector2& x){
+  Vector2 prod;
+  prod.x1 = A.a11 * x.x1 + A.a12 * x.x2;
+  prod.x2 = A.a21 * x.x1 + A.a22 * x.x2;
+  return prod;
+}
+
+Vector2 solve(const Matrix2x2& A,const Vector2& b){
+  Matrix2x2 A_inv = inverse(A);
+  Vector2 x = matvec(A_inv,b);
+  return x;
+}
+
+double infinity_norm(const Vector2& x){
+  return std::max(std::abs(x.x1),std::abs(x.x2));
+}

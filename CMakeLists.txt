@@ -328,3 +328,12 @@ target_include_directories(matrix_conditioning_edge_cases
     PRIVATE
     /home/pushkar/computational_materials_learning/include
 )
+##################################################Linear System Sensitivity ##############################################
+add_executable(
+    linear_system_sensitivity
+    examples/linear_system_sensitivity.cpp
+)
+target_include_directories(linear_system_sensitivity
+    PRIVATE
+    /home/pushkar/computational_materials_learning/include
+)

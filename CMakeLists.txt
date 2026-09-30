@@ -337,3 +337,12 @@ target_include_directories(linear_system_sensitivity
     PRIVATE
     /home/pushkar/computational_materials_learning/include
 )
+##################################################Conditioning Benchmark ##############################################
+add_executable(
+    conditioning_benchmark
+    examples/conditioning_benchmark.cpp
+)
+target_include_directories(conditioning_benchmark
+    PRIVATE
+    /home/pushkar/computational_materials_learning/include
+)

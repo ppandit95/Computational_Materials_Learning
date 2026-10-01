@@ -18,3 +18,21 @@ def test_asymptotic_slope_for_inverse_epsilon_scaling():
     slope = asymptotic_slope(epsilon, condition)
 
     assert slope == pytest.approx(-1.0)
+
+
+def test_asymptotic_slope_rejects_nonpositive_epsilon():
+    """Verify that nonpositive epsilon values are rejected."""
+    epsilon = np.array([
+        1e-2,
+        0.0,
+        1e-4,
+    ])
+
+    condition = np.array([
+        4e2,
+        4e3,
+        4e4,
+    ])
+
+    with pytest.raises(ValueError, match="must be positive"):
+        asymptotic_slope(epsilon, condition)

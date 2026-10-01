@@ -28,6 +28,8 @@ marimo/__marimo__/
 benchmark_output.csv
 temperatures.csv
 benchmarks/csv_io_scaling.csv
+data/*.csv
+
 
 # Executables and compiled objects
 *.o

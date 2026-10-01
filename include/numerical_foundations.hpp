@@ -219,15 +219,31 @@ double sqrt_relative_condition_number(double x) {
     return std::abs(x * fprime) / std::abs(f);
   }
 }
+/**
+ * @brief Structure representing a 2x2 matrix and a 2-component vector, along with
+ * their operations.
+ */
 struct Matrix2x2 {
     double a11;
     double a12;
     double a21;
     double a22;
 };
+/**
+ * @brief Compute the determinant of a 2x2 matrix.
+ *
+ * @param A Input matrix.
+ * @return Determinant of the matrix.
+ */
 double determinant(const Matrix2x2& A){
   return A.a11*A.a22 - A.a12*A.a21;
 }
+/**
+ * @brief Compute the infinity norm of a 2x2 matrix.
+ *
+ * @param A Input matrix.
+ * @return Maximum absolute row sum.
+ */
 double infinity_norm(const Matrix2x2& A)
 {
     const double row1 =
@@ -238,13 +254,25 @@ double infinity_norm(const Matrix2x2& A)
 
     return std::max(row1, row2);
 }
+/**
+ * @brief Compute the infinity norm of a two-component vector.
+ *
+ * @param x Input vector.
+ * @return max(|x1|, |x2|).
+ */
 double infinity_norm_vec(const std::array<double,2> b){
   double max = 0.0;
-  max = std::max(b[0],max);
-  max = std::max(b[1],max);
+  max = std::max(std::abs(b[0]),max);
+  max = std::max(std::abs(b[1]),max);
   return max;
 }
-
+/**
+ * @brief Calculates the inverse of a 2x2 matrix.
+ *
+ * @param A Input matrix.
+ * @return Inverse matrix
+ * @throws std::invalid_argument if the matrix is singular.
+ */
 Matrix2x2 inverse(const Matrix2x2& A)
 {
     const double det = determinant(A);
@@ -264,7 +292,12 @@ Matrix2x2 inverse(const Matrix2x2& A)
 
     return A_inv;
 }
-
+/**
+ * @brief Calculates the condition number of a 2x2 matrix using the infinity norm.
+ *
+ * @param A Input matrix.
+ * @return Condition number.
+ */
 double condition_number_inf(const Matrix2x2& A){
   return infinity_norm(A)*infinity_norm(inverse(A));
 }
@@ -272,19 +305,37 @@ struct Vector2{
   double x1;
   double x2;
 };
-
+/**
+ * @brief multiplies a 2x2 matrix with a 2-component vector.
+ *
+ * @param A Input matrix.
+ * @param x Input vector.
+ * @return Product vector x.
+ */
 Vector2 matvec(const Matrix2x2& A,const Vector2& x){
   Vector2 prod;
   prod.x1 = A.a11 * x.x1 + A.a12 * x.x2;
   prod.x2 = A.a21 * x.x1 + A.a22 * x.x2;
   return prod;
 }
-
+/**
+ * @brief Solves the Linear System of equations Ax = b for x
+ *
+ * @param A Input matrix.
+ * @param b Input vector.
+ * @return Solution vector x.
+ */
 Vector2 solve(const Matrix2x2& A,const Vector2& b){
   Matrix2x2 A_inv = inverse(A);
   Vector2 x = matvec(A_inv,b);
   return x;
 }
+/**
+ * @brief Compute the infinity norm of a two-component vector.
+ *
+ * @param x Input vector.
+ * @return max(|x1|, |x2|).
+ */
 
 double infinity_norm(const Vector2& x){
   return std::max(std::abs(x.x1),std::abs(x.x2));

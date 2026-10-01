@@ -319,3 +319,30 @@ TEST_CASE("Condition number bounds RHS perturbation sensitivity")
         B);
   CHECK(r_x > r_b);
 }
+
+TEST_CASE("matrix multiplied by its inverse gives identity")
+{
+    Matrix2x2 A{1.0, 2.0, 3.0, 4.0};
+    Vector2 b{5.0, 6.0};
+    const Matrix2x2 A_inv = inverse(A);
+    const Vector2 product = matvec(A_inv, b);
+    const Vector2 prod_A = matvec(A, product);
+    CHECK(prod_A.x1 == doctest::Approx(b.x1));
+    CHECK(prod_A.x2 == doctest::Approx(b.x2));
+}
+
+TEST_CASE("Infinity Norm handles Negative Signs")
+{
+    const Vector2 v{-3.5, 2.0};
+    CHECK(infinity_norm(v) == doctest::Approx(3.5));
+}
+
+TEST_CASE("solving reproduces the RHS")
+{
+    Matrix2x2 A{1.0, 2.0, 3.0, 4.0};
+    Vector2 b{5.0, 6.0};
+    const Vector2 x = solve(A, b);
+    const Vector2 prod = matvec(A, x);
+    CHECK(prod.x1 == doctest::Approx(b.x1));
+    CHECK(prod.x2 == doctest::Approx(b.x2));
+}

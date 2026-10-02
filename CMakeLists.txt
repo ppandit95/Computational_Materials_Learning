@@ -243,6 +243,11 @@ target_link_libraries(
     scientific_workspace
     doctest::doctest
 )
+target_link_libraries(
+    numerical_foundations_doctest
+    PRIVATE
+    csr_matrix
+)
 
 target_compile_options(
     numerical_foundations_doctest
@@ -345,4 +350,24 @@ add_executable(
 target_include_directories(conditioning_benchmark
     PRIVATE
     /home/pushkar/computational_materials_learning/include
+)
+##################################################CSR Matrix  ##############################################
+add_library(
+    csr_matrix
+    src/csr_matrix.cpp
+)
+
+target_include_directories(
+    csr_matrix
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+target_compile_options(
+    csr_matrix
+    PRIVATE
+    -Wall
+    -Wextra
+    -Wpedantic
+    -Wconversion
 )

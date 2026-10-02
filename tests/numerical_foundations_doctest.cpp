@@ -3,6 +3,7 @@
 
 #include "numerical_foundations.hpp"
 #include "workspace_algorithms.hpp"
+#include "csr_matrix.hpp"
 #include <algorithm>
 #include <limits>
 #include <stdexcept>
@@ -322,27 +323,41 @@ TEST_CASE("Condition number bounds RHS perturbation sensitivity")
 
 TEST_CASE("matrix multiplied by its inverse gives identity")
 {
-    Matrix2x2 A{1.0, 2.0, 3.0, 4.0};
-    Vector2 b{5.0, 6.0};
-    const Matrix2x2 A_inv = inverse(A);
-    const Vector2 product = matvec(A_inv, b);
-    const Vector2 prod_A = matvec(A, product);
-    CHECK(prod_A.x1 == doctest::Approx(b.x1));
-    CHECK(prod_A.x2 == doctest::Approx(b.x2));
+  Matrix2x2 A{1.0, 2.0, 3.0, 4.0};
+  Vector2 b{5.0, 6.0};
+  const Matrix2x2 A_inv = inverse(A);
+  const Vector2 product = matvec(A_inv, b);
+  const Vector2 prod_A = matvec(A, product);
+  CHECK(prod_A.x1 == doctest::Approx(b.x1));
+  CHECK(prod_A.x2 == doctest::Approx(b.x2));
 }
 
 TEST_CASE("Infinity Norm handles Negative Signs")
 {
-    const Vector2 v{-3.5, 2.0};
-    CHECK(infinity_norm(v) == doctest::Approx(3.5));
+  const Vector2 v{-3.5, 2.0};
+  CHECK(infinity_norm(v) == doctest::Approx(3.5));
 }
 
 TEST_CASE("solving reproduces the RHS")
 {
-    Matrix2x2 A{1.0, 2.0, 3.0, 4.0};
-    Vector2 b{5.0, 6.0};
-    const Vector2 x = solve(A, b);
-    const Vector2 prod = matvec(A, x);
-    CHECK(prod.x1 == doctest::Approx(b.x1));
-    CHECK(prod.x2 == doctest::Approx(b.x2));
+  Matrix2x2 A{1.0, 2.0, 3.0, 4.0};
+  Vector2 b{5.0, 6.0};
+  const Vector2 x = solve(A, b);
+  const Vector2 prod = matvec(A, x);
+  CHECK(prod.x1 == doctest::Approx(b.x1));
+  CHECK(prod.x2 == doctest::Approx(b.x2));
+}
+TEST_CASE("CSR matvec reproduces tridiagonal operator")
+{
+  CSRMatrix A(3, 3, {2.0, -1.0, -1.0, 2.0, -1.0, -1.0, 2.0}, {0, 1, 0, 1, 2, 1, 2}, {0, 2, 5, 7});
+  const std::vector<double> x{1.0, 2.0, 3.0};
+  const auto y = A.matvec(x);
+  REQUIRE(y.size() == 3);
+  CHECK(y[0] == doctest::Approx(0.0));
+  CHECK(y[1] == doctest::Approx(0.0));
+  CHECK(y[2] == doctest::Approx(4.0));
+  CHECK(A.nnz() == 7);
+  CHECK_THROWS_AS(
+      A.matvec({1.0, 2.0}),
+      std::invalid_argument);
 }

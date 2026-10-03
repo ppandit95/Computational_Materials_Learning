@@ -247,6 +247,7 @@ target_link_libraries(
     numerical_foundations_doctest
     PRIVATE
     csr_matrix
+    diffusion_1d
 )
 
 target_compile_options(
@@ -370,4 +371,30 @@ target_compile_options(
     -Wextra
     -Wpedantic
     -Wconversion
+)
+##################################################CSRMatrix Generation for 1D Diffusion ##############################################
+add_library(
+    diffusion_1d
+    src/diffusion_1d.cpp
+)
+target_include_directories(diffusion_1d
+    PRIVATE
+    /home/pushkar/computational_materials_learning/include
+)
+target_compile_options(
+    diffusion_1d
+    PRIVATE
+    -fsanitize=address,undefined
+    -fno-omit-frame-pointer
+)
+target_link_options(
+    diffusion_1d
+    PRIVATE
+    -fsanitize=address,undefined
+)
+target_link_libraries(
+    diffusion_1d
+    PRIVATE
+    csr_matrix
+    
 )

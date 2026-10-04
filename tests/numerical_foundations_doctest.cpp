@@ -5,6 +5,7 @@
 #include "workspace_algorithms.hpp"
 #include "csr_matrix.hpp"
 #include "diffusion_1d.hpp"
+#include "tridiagonal.hpp"
 #include <algorithm>
 #include <limits>
 #include <stdexcept>
@@ -359,7 +360,7 @@ TEST_CASE("CSR matvec reproduces tridiagonal operator")
   CHECK(y[2] == doctest::Approx(4.0));
   CHECK(A.nnz() == 7);
   CHECK_THROWS_AS(
-      A.matvec({1.0, 2.0}),
+      (void)A.matvec({1.0, 2.0}),
       std::invalid_argument);
 }
 
@@ -379,6 +380,33 @@ TEST_CASE("1D Diffusion Assembly Produces Expected Operator")
   CHECK(y[1] == doctest::Approx(0.0));
   CHECK(y[2] == doctest::Approx(0.0));
   CHECK(y[3] == doctest::Approx(20.0));
-  CHECK_THROWS_AS(make_1d_diffusion_matrix(0, 0.5), std::invalid_argument);
-  CHECK_THROWS_AS(make_1d_diffusion_matrix(4, 0.0), std::invalid_argument);
+  CHECK_THROWS_AS(
+      (void)make_1d_diffusion_matrix(0, 0.5),
+      std::invalid_argument);
+
+  CHECK_THROWS_AS(
+      (void)make_1d_diffusion_matrix(4, 0.0),
+      std::invalid_argument);
+}
+
+TEST_CASE("generic tridiagonal matrix produces expected matvec")
+{
+  const auto A = make_tridiagonal_matrix(5, -2.0, 5.0, -3.0);
+  CHECK(A.rows() == 5);
+  CHECK(A.cols() == 5);
+  CHECK(A.nnz() == 13);
+  const std::vector<double> x{1.0, 1.0, 1.0, 1.0, 1.0};
+  const auto y = A.matvec(x);
+
+  REQUIRE(y.size() == 5);
+
+  CHECK(y[0] == doctest::Approx(2.0));
+  CHECK(y[1] == doctest::Approx(0.0));
+  CHECK(y[2] == doctest::Approx(0.0));
+  CHECK(y[3] == doctest::Approx(0.0));
+  CHECK(y[4] == doctest::Approx(3.0));
+  CHECK_THROWS_AS(
+      (void)make_tridiagonal_matrix(
+          0, -1.0, 2.0, -1.0),
+      std::invalid_argument);
 }

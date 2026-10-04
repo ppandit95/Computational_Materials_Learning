@@ -248,6 +248,7 @@ target_link_libraries(
     PRIVATE
     csr_matrix
     diffusion_1d
+    tridiagonal_matrix
 )
 
 target_compile_options(
@@ -396,5 +397,32 @@ target_link_libraries(
     diffusion_1d
     PRIVATE
     csr_matrix
+    tridiagonal_matrix
     
+)
+##################################################Library Generation for CSR representation of Tridiagonal Matrix ##############################################
+add_library(
+    tridiagonal_matrix
+    src/tridiagonal.cpp
+)
+target_include_directories(tridiagonal_matrix
+    PRIVATE
+    /home/pushkar/computational_materials_learning/include
+)
+target_compile_options(
+    tridiagonal_matrix
+    PRIVATE
+    -fsanitize=address,undefined
+    -fno-omit-frame-pointer
+)
+target_link_options(
+    tridiagonal_matrix
+    PRIVATE
+    -fsanitize=address,undefined
+)
+target_link_libraries(
+    tridiagonal_matrix
+    PRIVATE
+    csr_matrix
+    diffusion_1d
 )

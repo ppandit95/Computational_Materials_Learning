@@ -410,3 +410,40 @@ TEST_CASE("generic tridiagonal matrix produces expected matvec")
           0, -1.0, 2.0, -1.0),
       std::invalid_argument);
 }
+
+TEST_CASE("CSR constructor rejects malformed storage")
+{
+  CHECK_THROWS_AS(
+      (void)CSRMatrix(
+          2, 2,
+          {2.0, -1.0, -1.0, 2.0},
+          {0, 1, 0, 1},
+          {0, 4}),
+      std::invalid_argument);
+  CHECK_THROWS_AS(
+      (void)CSRMatrix(
+          2, 2,
+          {2.0, -1.0},
+          {0},
+          {0, 1, 2}),
+      std::invalid_argument);
+  CHECK_THROWS_AS((void)CSRMatrix(2, 2, {2.0, -1.0, -1.0, 2.0}, {0, 1, 0, 1}, {1, 2, 4}), std::invalid_argument);
+  CHECK_THROWS_AS((void)CSRMatrix(2, 2, {2.0, -1.0, -1.0, 2.0}, {0, 1, 0, 1}, {1, 2, 1}), std::invalid_argument);
+  CHECK_THROWS_AS((void)CSRMatrix(2, 2, {2.0, -1.0, -1.0, 2.0}, {0, 1, 0, 1}, {1, 2, 1}), std::invalid_argument);
+  CHECK_THROWS_AS((void)CSRMatrix(2, 2, {2.0, -1.0, -1.0, 2.0}, {0, 1, 0, 3}, {1, 2, 1}), std::invalid_argument);
+}
+
+TEST_CASE("Single-Node Diffusion Operator is Valid")
+{
+  const auto A = make_1d_diffusion_matrix(1, 0.5);
+
+  CHECK(A.rows() == 1);
+  CHECK(A.cols() == 1);
+  CHECK(A.nnz() == 1);
+
+  const std::vector<double> x{3.0};
+  const auto y = A.matvec(x);
+
+  REQUIRE(y.size() == 1);
+  CHECK(y[0] == doctest::Approx(24.0));
+}

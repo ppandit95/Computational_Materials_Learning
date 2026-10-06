@@ -6,6 +6,7 @@
 #include "csr_matrix.hpp"
 #include "diffusion_1d.hpp"
 #include "tridiagonal.hpp"
+#include "csr_diagnostics.hpp"
 #include <algorithm>
 #include <limits>
 #include <stdexcept>
@@ -446,4 +447,20 @@ TEST_CASE("Single-Node Diffusion Operator is Valid")
 
   REQUIRE(y.size() == 1);
   CHECK(y[0] == doctest::Approx(24.0));
+}
+
+TEST_CASE("tridiagonal CSR matvec work scales with nnz")
+{
+  for (const std::size_t n : {1U, 10U, 100U, 1000U})
+  {
+    const auto A = make_tridiagonal_matrix(n, -1.0, 2.0, -1.0);
+    const auto work = estimate_matvec_work(A);
+    const std::size_t expected_nnz = 3 * n - 2;
+
+    CHECK(A.nnz() == expected_nnz);
+    CHECK(work.nonzeros == expected_nnz);
+    CHECK(work.multiplications == expected_nnz);
+    CHECK(work.additions == expected_nnz);
+    CHECK(work.flops() == 2 * expected_nnz);
+  }
 }

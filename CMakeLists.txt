@@ -249,6 +249,7 @@ target_link_libraries(
     csr_matrix
     diffusion_1d
     tridiagonal_matrix
+    csr_diagnostics
 )
 
 target_compile_options(
@@ -425,4 +426,31 @@ target_link_libraries(
     PRIVATE
     csr_matrix
     diffusion_1d
+)
+##################################################Library Generation for CSR Diagnostics of Tridiagonal Matrix ##############################################
+add_library(
+    csr_diagnostics
+    src/csr_diagnostics.cpp
+)
+target_include_directories(csr_diagnostics
+    PRIVATE
+    /home/pushkar/computational_materials_learning/include
+)
+target_compile_options(
+    csr_diagnostics
+    PRIVATE
+    -fsanitize=address,undefined
+    -fno-omit-frame-pointer
+)
+target_link_options(
+    csr_diagnostics
+    PRIVATE
+    -fsanitize=address,undefined
+)
+target_link_libraries(
+    csr_diagnostics
+    PRIVATE
+    csr_matrix
+    diffusion_1d
+    tridiagonal_matrix
 )

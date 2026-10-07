@@ -454,3 +454,28 @@ target_link_libraries(
     diffusion_1d
     tridiagonal_matrix
 )
+##################################################Benchmark for CSR Tridiagonal Matrix Vector Multiplication ##############################################
+add_executable(
+    benchmark_csr
+    benchmarks/benchmark_csr_matvec.cpp
+)
+target_include_directories(benchmark_csr
+    PRIVATE
+    /home/pushkar/computational_materials_learning/include
+)
+target_compile_options(
+    benchmark_csr
+    PRIVATE
+    -fsanitize=address,undefined
+    -fno-omit-frame-pointer
+)
+target_link_options(
+    benchmark_csr
+    PRIVATE
+    -fsanitize=address,undefined
+)
+target_link_libraries(
+    benchmark_csr
+    PRIVATE
+    tridiagonal_matrix
+)

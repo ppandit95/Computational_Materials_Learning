@@ -464,3 +464,27 @@ TEST_CASE("tridiagonal CSR matvec work scales with nnz")
     CHECK(work.flops() == 2 * expected_nnz);
   }
 }
+
+TEST_CASE("tridiagonal CSR MatVec Regression Test")
+{
+  std::vector<double> x{1.0, 2.0, 4.0};
+  const auto A = make_tridiagonal_matrix(3, -1.0, 2.0, -1.0);
+  const auto y = A.matvec(x);
+  REQUIRE(y.size() == 3);
+  CHECK(y[0] == doctest::Approx(0.0));
+  CHECK(y[1] == doctest::Approx(-1.0));
+  CHECK(y[2] == doctest::Approx(6.0));
+}
+
+TEST_CASE("Tridiagonal CSR MatVec with Constant Vector")
+{
+  std::vector<double> x{1.0, 1.0, 1.0, 1.0, 1.0};
+  const auto A = make_tridiagonal_matrix(x.size(), -1.0, 2.0, -1.0);
+  const auto y = A.matvec(x);
+  REQUIRE(y.size() == 5);
+  CHECK(y[0] == doctest::Approx(1.0));
+  CHECK(y[1] == doctest::Approx(0.0));
+  CHECK(y[2] == doctest::Approx(0.0));
+  CHECK(y[3] == doctest::Approx(0.0));
+  CHECK(y[4] == doctest::Approx(1.0));
+}

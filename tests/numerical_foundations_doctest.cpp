@@ -7,6 +7,7 @@
 #include "diffusion_1d.hpp"
 #include "tridiagonal.hpp"
 #include "csr_diagnostics.hpp"
+#include "linear_solver_diagnostics.hpp"
 #include <algorithm>
 #include <limits>
 #include <stdexcept>
@@ -487,4 +488,45 @@ TEST_CASE("Tridiagonal CSR MatVec with Constant Vector")
   CHECK(y[2] == doctest::Approx(0.0));
   CHECK(y[3] == doctest::Approx(0.0));
   CHECK(y[4] == doctest::Approx(1.0));
+}
+
+TEST_CASE("CSR Residual matches analytical solution")
+{
+  const auto A = make_tridiagonal_matrix(3, -1.0, 2.0, -1.0);
+  const std::vector<double> b{0.0, 2.0, 0.0};
+
+  const std::vector<double> x0{0.0, 0.0, 0.0};
+  const std::vector<double> x1{1.0, 1.0, 1.0};
+  const std::vector<double> x_exact{1.0, 2.0, 1.0};
+
+  std::vector<double> r0;
+  std::vector<double> r1;
+  std::vector<double> tmp;
+  std::vector<double> r_exact;
+  r1.reserve(b.size());
+  tmp.reserve(b.size());
+  r0.reserve(b.size());
+  tmp = A.matvec(x0);
+  for (std::size_t i = 0; i < b.size(); i++)
+  {
+    r0[i] = b[i] - tmp[i];
+    CHECK(r0[i] == b[i]);
+  }
+  tmp = A.matvec(x1);
+  for (std::size_t i = 0; i < b.size(); i++)
+  {
+    r1[i] = b[i] - tmp[i];
+  }
+  CHECK(r1[0] == doctest::Approx(-1.0));
+  CHECK(r1[1] == doctest::Approx(2.0));
+  CHECK(r1[2] == doctest::Approx(-1.0));
+
+  tmp = A.matvec(x_exact);
+  for (std::size_t i = 0; i < b.size(); i++)
+  {
+    r_exact[i] = b[i] - tmp[i];
+  }
+  CHECK(r_exact[0] == doctest::Approx(0.0));
+  CHECK(r_exact[1] == doctest::Approx(0.0));
+  CHECK(r_exact[2] == doctest::Approx(0.0));
 }

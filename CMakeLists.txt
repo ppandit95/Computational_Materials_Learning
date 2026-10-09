@@ -431,6 +431,8 @@ target_link_libraries(
 add_library(
     csr_diagnostics
     src/csr_diagnostics.cpp
+    src/linear_solver_diagnostics.cpp
+
 )
 target_include_directories(csr_diagnostics
     PRIVATE

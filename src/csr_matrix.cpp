@@ -3,6 +3,21 @@
 #include <utility>
 #include <stdexcept>
 #include <vector>
+
+/**
+ * @brief Constructor for CSRMatrix class to create a CSR representation of a sparse matrix.
+ * @param rows Number of rows in the sparse matrix.
+ * @param cols Number of columns in the sparse matrix.
+ * @param values Vector storing non-zero values of the matrix.
+ * @param col_indices Vector storing column indices corresponding to non-zero entries.
+ * @param row_ptr Vector tracking the start position of non-zero entries for each row.
+ * @throws std::invalid_argument if row_ptr size does not equal rows + 1.
+ * @throws std::invalid_argument if values and col_indices sizes do not match.
+ * @throws std::invalid_argument if the first element of row_ptr is not 0.
+ * @throws std::invalid_argument if the last element of row_ptr does not equal nnz (size of values).
+ * @throws std::invalid_argument if row_ptr is not monotonically increasing.
+ * @throws std::invalid_argument if col_indices contains indices outside the valid column range.
+ */
 CSRMatrix::CSRMatrix(std::size_t rows, std::size_t cols, std::vector<double> values, std::vector<std::size_t> col_indices, std::vector<std::size_t> row_ptr)
     : rows_(rows), cols_(cols)
 {
@@ -30,6 +45,12 @@ CSRMatrix::CSRMatrix(std::size_t rows, std::size_t cols, std::vector<double> val
     values_ = std::move(values);
     col_indices_ = std::move(col_indices);
 }
+/**
+ * @brief Member function to compute matrix vector multiplication through CSR representation.
+ * @param x Vector to be multiplied with the corresponding matrix CSR representation.
+ * @throws std::invalid_argument if size of vector does not match the number of columns in the matrix.
+ * @return A vector result which depicts the matrix vector product.
+ */
 std::vector<double> CSRMatrix::matvec(const std::vector<double> &x) const
 {
     if (x.size() != cols_)
@@ -46,14 +67,36 @@ std::vector<double> CSRMatrix::matvec(const std::vector<double> &x) const
     }
     return result;
 }
+/**
+ * @brief Returns the number of rows in the sparse matrix.
+ *
+ * @return std::size_t The number of rows in the CSR matrix.
+ *
+ * @note This function does not throw exceptions.
+ */
 std::size_t CSRMatrix::rows() const noexcept
 {
     return rows_;
 }
+/**
+ * @brief Returns the number of columns in the CSR matrix.
+ *
+ * @return std::size_t The number of columns in the matrix.
+ *
+ * @note This function is marked with noexcept and does not modify the matrix state.
+ */
 std::size_t CSRMatrix::cols() const noexcept
 {
     return cols_;
 }
+/**
+ * @brief Returns the number of non-zero elements in the CSR matrix.
+ *
+ * @return std::size_t The count of non-zero elements stored in the values array.
+ *
+ * @note This operation has O(1) time complexity as it simply returns the size
+ *       of the internal values vector.
+ */
 std::size_t CSRMatrix::nnz() const noexcept
 {
     return values_.size();

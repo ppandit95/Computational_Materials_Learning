@@ -1,5 +1,6 @@
 from python.benchmark_analysis import compute_scaling_ratios, scaling_exponent
 import pytest
+import numpy as np
 
 
 def test_compute_scaling_ratios():
@@ -10,6 +11,8 @@ def test_compute_scaling_ratios():
     time_ratios = [10, 10]
     assert Scaling == pytest.approx(time_ratios)
     assert PSize == pytest.approx(size_ratios)
+
+
 def test_scaling_exponent_for_linear_sublinear_superlinear_exponent():
     rows = [10_000, 100_000, 1_000_000]
     times = [0.01, 0.10, 1.00]
@@ -23,14 +26,18 @@ def test_scaling_exponent_for_linear_sublinear_superlinear_exponent():
         t2 = times[i]
         exponent = scaling_exponent(n1, n2, t1, t2)
         if exponent > 1:
-            super+=1
+            super += 1
         elif exponent < 1:
-            sub+=1
+            sub += 1
         else:
-            linear+=1
+            linear += 1
     assert super == 0
     assert sub == 0
     assert linear == 2
 
 
+def test_quadratic_scaling():
+    n = np.array([10.0, 100.0, 1000.0])
+    t = 2.0 * n**2
 
+    assert scaling_exponent(n[1], n[2], t[1], t[2]) == pytest.approx(2.0)

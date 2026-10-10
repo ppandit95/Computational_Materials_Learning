@@ -250,6 +250,7 @@ target_link_libraries(
     diffusion_1d
     tridiagonal_matrix
     csr_diagnostics
+    jacobi_iteration
 )
 
 target_compile_options(
@@ -321,8 +322,7 @@ target_include_directories(matrix_conditioning_demo
 ##################################################Matrix Conditioning Sweep ##############################################
 add_executable(
     matrix_conditioning_sweep
-    examples/conditioning_sweep.cpp
-)
+    examples/conditioning_sweep.cpp)
 target_include_directories(matrix_conditioning_sweep
     PRIVATE
     /home/pushkar/computational_materials_learning/include
@@ -480,4 +480,33 @@ target_link_libraries(
     benchmark_csr
     PRIVATE
     tridiagonal_matrix
+)
+##################################################Library Generation for Jacobi Iteration of Tridiagonal Matrix ##############################################
+add_library(
+    jacobi_iteration
+    src/jacobi_iteration.cpp
+
+)
+target_include_directories(jacobi_iteration
+    PRIVATE
+    /home/pushkar/computational_materials_learning/include
+)
+target_compile_options(
+    jacobi_iteration
+    PRIVATE
+    -fsanitize=address,undefined
+    -fno-omit-frame-pointer
+)
+target_link_options(
+    jacobi_iteration
+    PRIVATE
+    -fsanitize=address,undefined
+)
+target_link_libraries(
+    jacobi_iteration
+    PRIVATE
+    csr_matrix
+    diffusion_1d
+    tridiagonal_matrix
+    csr_diagnostics
 )

@@ -8,6 +8,7 @@
 #include "tridiagonal.hpp"
 #include "csr_diagnostics.hpp"
 #include "linear_solver_diagnostics.hpp"
+#include "jacobi_iteration.hpp"
 #include <algorithm>
 #include <limits>
 #include <stdexcept>
@@ -506,6 +507,7 @@ TEST_CASE("CSR Residual matches analytical solution")
   r1.reserve(b.size());
   tmp.reserve(b.size());
   r0.reserve(b.size());
+  r_exact.reserve(b.size());
   tmp = A.matvec(x0);
   for (std::size_t i = 0; i < b.size(); i++)
   {
@@ -529,4 +531,29 @@ TEST_CASE("CSR Residual matches analytical solution")
   CHECK(r_exact[0] == doctest::Approx(0.0));
   CHECK(r_exact[1] == doctest::Approx(0.0));
   CHECK(r_exact[2] == doctest::Approx(0.0));
+}
+
+TEST_CASE("Jacobi Iteration approaches analytical solution")
+{
+  const auto A = make_tridiagonal_matrix(3, -1.0, 2.0, -1.0);
+  const std::vector<double> b{0.0, 2.0, 0.0};
+  const std::vector<double> diagonal{2.0, 2.0, 2.0};
+  const std::vector<double> x0{0.0, 0.0, 0.0};
+  const auto x1 = jacobi_step(A, x0, b, diagonal);
+  const auto x2 = jacobi_step(A, x1, b, diagonal);
+  const auto x3 = jacobi_step(A, x2, b, diagonal);
+
+  REQUIRE(x3.size() == 3);
+
+  CHECK(x1[1] == doctest::Approx(1.0));
+
+  CHECK(x2[0] == doctest::Approx(0.5));
+  CHECK(x2[1] == doctest::Approx(1.0));
+  CHECK(x2[2] == doctest::Approx(0.5));
+
+  CHECK(x3[0] == doctest::Approx(0.5));
+  CHECK(x3[1] == doctest::Approx(1.5));
+  CHECK(x3[2] == doctest::Approx(0.5));
+
+  CHECK_THROWS_AS(jacobi_step(A, x1, b, {2.0, 0.0, 2.0}), std::invalid_argument);
 }

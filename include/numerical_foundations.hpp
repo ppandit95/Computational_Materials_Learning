@@ -3,7 +3,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
-#include<array>
+#include <array>
 
 /**
  * @brief Checks whether two floating-point numbers are nearly equal.
@@ -19,8 +19,10 @@
  * @return true if the numbers are nearly equal, false otherwise.
  * @throws std::invalid_argument if rtol or atol is negative.
  */
-bool nearly_equal(double a, double b, double rtol, double atol) {
-  if (rtol < 0.0 || atol < 0.0) {
+inline bool nearly_equal(double a, double b, double rtol, double atol)
+{
+  if (rtol < 0.0 || atol < 0.0)
+  {
     throw std::invalid_argument("Error: rtol and atol must be non-negative.");
   }
 
@@ -41,19 +43,23 @@ bool nearly_equal(double a, double b, double rtol, double atol) {
  * @return Discrete L1 error. Returns 0.0 for two empty vectors.
  * @throws std::invalid_argument if the vector sizes differ.
  */
-double l1_error(const std::vector<double> &numerical,
-                const std::vector<double> &reference) {
-  if (numerical.size() != reference.size()) {
+inline double l1_error(const std::vector<double> &numerical,
+                       const std::vector<double> &reference)
+{
+  if (numerical.size() != reference.size())
+  {
     throw std::invalid_argument("The size of 2 vectors should match");
   }
 
-  if (numerical.empty()) {
+  if (numerical.empty())
+  {
     return 0.0;
   }
 
   double sum = 0.0;
 
-  for (std::size_t i = 0; i < numerical.size(); ++i) {
+  for (std::size_t i = 0; i < numerical.size(); ++i)
+  {
     const double error = numerical[i] - reference[i];
 
     sum += std::abs(error);
@@ -80,34 +86,41 @@ double l1_error(const std::vector<double> &numerical,
  * @note the implementation uses scaled sum-of-squares to reduce intermediate
  * overflow/underflow.
  */
-double l2_error(const std::vector<double> &numerical,
-                const std::vector<double> &reference) {
-  if (numerical.size() != reference.size()) {
+inline double l2_error(const std::vector<double> &numerical,
+                       const std::vector<double> &reference)
+{
+  if (numerical.size() != reference.size())
+  {
     throw std::invalid_argument("The size of 2 vectors should match");
   }
 
-  if (numerical.empty()) {
+  if (numerical.empty())
+  {
     return 0.0;
   }
 
   double scale = 0.0;
   double sumsq = 1.0;
 
-  for (std::size_t i = 0; i < numerical.size(); ++i) {
+  for (std::size_t i = 0; i < numerical.size(); ++i)
+  {
 
     const double a = std::abs(numerical[i] - reference[i]);
 
-    if (a != 0.0) {
+    if (a != 0.0)
+    {
 
-      if (scale < a) {
+      if (scale < a)
+      {
 
         const double ratio = scale / a;
 
         sumsq = 1.0 + sumsq * ratio * ratio;
 
         scale = a;
-
-      } else {
+      }
+      else
+      {
 
         const double ratio = a / scale;
 
@@ -134,19 +147,23 @@ double l2_error(const std::vector<double> &numerical,
  * when one of the vector consists of NaN
  * @throws std::invalid_argument if the vector sizes differ.
  */
-double linf_error(const std::vector<double> &numerical,
-                  const std::vector<double> &reference) {
-  if (numerical.size() != reference.size()) {
+inline double linf_error(const std::vector<double> &numerical,
+                         const std::vector<double> &reference)
+{
+  if (numerical.size() != reference.size())
+  {
     throw std::invalid_argument("The size of 2 vectors should match");
   }
 
-  if (numerical.empty()) {
+  if (numerical.empty())
+  {
     return 0.0;
   }
 
   double max_error = 0.0;
 
-  for (std::size_t i = 0; i < numerical.size(); ++i) {
+  for (std::size_t i = 0; i < numerical.size(); ++i)
+  {
     const double error = std::abs(numerical[i] - reference[i]);
 
     max_error = std::max(max_error, error);
@@ -171,17 +188,21 @@ double linf_error(const std::vector<double> &numerical,
  * @throws std::invalid_argument if the vector sizes differ as well as if
  * reference vecotr is a zero vector
  */
-double relative_l2_error(const std::vector<double> &numerical,
-                         const std::vector<double> &reference) {
-  if (numerical.size() != reference.size()) {
+inline double relative_l2_error(const std::vector<double> &numerical,
+                                const std::vector<double> &reference)
+{
+  if (numerical.size() != reference.size())
+  {
     throw std::invalid_argument("The size of 2 vectors should match");
   }
 
-  if (numerical.empty()) {
+  if (numerical.empty())
+  {
     throw std::invalid_argument("The input arrays are not invalid");
   }
   unsigned int count = 0;
-  if (numerical.size() == reference.size()) {
+  if (numerical.size() == reference.size())
+  {
     for (std::size_t i = 0; i < numerical.size(); ++i)
       if (nearly_equal(reference[i], 0.0, 1e-6, 1e-6))
         count++;
@@ -192,7 +213,8 @@ double relative_l2_error(const std::vector<double> &numerical,
   double sum = 0.0;
   double sum1 = 0.0;
 
-  for (std::size_t i = 0; i < numerical.size(); ++i) {
+  for (std::size_t i = 0; i < numerical.size(); ++i)
+  {
     const double error = numerical[i] - reference[i];
     sum1 += reference[i] * reference[i];
     sum += error * error;
@@ -209,11 +231,13 @@ double relative_l2_error(const std::vector<double> &numerical,
  * perturbing x
  * @throws std::invalid_argument if the input double is negative
  */
-double sqrt_relative_condition_number(double x) {
-  if (x <= 0.0 )
+inline double sqrt_relative_condition_number(double x)
+{
+  if (x <= 0.0)
     throw std::invalid_argument(
         "Condition Numer of Negative Number cannot be determined");
-  else {
+  else
+  {
     const double f = std::sqrt(x);
     const double fprime = 1.0 / (2.0 * std::sqrt(x));
     return std::abs(x * fprime) / std::abs(f);
@@ -223,11 +247,12 @@ double sqrt_relative_condition_number(double x) {
  * @brief Structure representing a 2x2 matrix and a 2-component vector, along with
  * their operations.
  */
-struct Matrix2x2 {
-    double a11;
-    double a12;
-    double a21;
-    double a22;
+struct Matrix2x2
+{
+  double a11;
+  double a12;
+  double a21;
+  double a22;
 };
 /**
  * @brief Compute the determinant of a 2x2 matrix.
@@ -235,8 +260,9 @@ struct Matrix2x2 {
  * @param A Input matrix.
  * @return Determinant of the matrix.
  */
-double determinant(const Matrix2x2& A){
-  return A.a11*A.a22 - A.a12*A.a21;
+inline double determinant(const Matrix2x2 &A)
+{
+  return A.a11 * A.a22 - A.a12 * A.a21;
 }
 /**
  * @brief Compute the infinity norm of a 2x2 matrix.
@@ -244,15 +270,15 @@ double determinant(const Matrix2x2& A){
  * @param A Input matrix.
  * @return Maximum absolute row sum.
  */
-double infinity_norm(const Matrix2x2& A)
+inline double infinity_norm(const Matrix2x2 &A)
 {
-    const double row1 =
-        std::abs(A.a11) + std::abs(A.a12);
+  const double row1 =
+      std::abs(A.a11) + std::abs(A.a12);
 
-    const double row2 =
-        std::abs(A.a21) + std::abs(A.a22);
+  const double row2 =
+      std::abs(A.a21) + std::abs(A.a22);
 
-    return std::max(row1, row2);
+  return std::max(row1, row2);
 }
 /**
  * @brief Compute the infinity norm of a two-component vector.
@@ -260,10 +286,11 @@ double infinity_norm(const Matrix2x2& A)
  * @param x Input vector.
  * @return max(|x1|, |x2|).
  */
-double infinity_norm_vec(const std::array<double,2> b){
+inline double infinity_norm_vec(const std::array<double, 2> b)
+{
   double max = 0.0;
-  max = std::max(std::abs(b[0]),max);
-  max = std::max(std::abs(b[1]),max);
+  max = std::max(std::abs(b[0]), max);
+  max = std::max(std::abs(b[1]), max);
   return max;
 }
 /**
@@ -273,24 +300,24 @@ double infinity_norm_vec(const std::array<double,2> b){
  * @return Inverse matrix
  * @throws std::invalid_argument if the matrix is singular.
  */
-Matrix2x2 inverse(const Matrix2x2& A)
+inline Matrix2x2 inverse(const Matrix2x2 &A)
 {
-    const double det = determinant(A);
+  const double det = determinant(A);
 
-    if (det == 0.0) {
-        throw std::invalid_argument(
-            "Matrix is singular and inverse cannot be determined."
-        );
-    }
+  if (det == 0.0)
+  {
+    throw std::invalid_argument(
+        "Matrix is singular and inverse cannot be determined.");
+  }
 
-    Matrix2x2 A_inv;
+  Matrix2x2 A_inv;
 
-    A_inv.a11 =  A.a22 / det;
-    A_inv.a12 = -A.a12 / det;
-    A_inv.a21 = -A.a21 / det;
-    A_inv.a22 =  A.a11 / det;
+  A_inv.a11 = A.a22 / det;
+  A_inv.a12 = -A.a12 / det;
+  A_inv.a21 = -A.a21 / det;
+  A_inv.a22 = A.a11 / det;
 
-    return A_inv;
+  return A_inv;
 }
 /**
  * @brief Calculates the condition number of a 2x2 matrix using the infinity norm.
@@ -298,10 +325,12 @@ Matrix2x2 inverse(const Matrix2x2& A)
  * @param A Input matrix.
  * @return Condition number.
  */
-double condition_number_inf(const Matrix2x2& A){
-  return infinity_norm(A)*infinity_norm(inverse(A));
+inline double condition_number_inf(const Matrix2x2 &A)
+{
+  return infinity_norm(A) * infinity_norm(inverse(A));
 }
-struct Vector2{
+struct Vector2
+{
   double x1;
   double x2;
 };
@@ -312,7 +341,8 @@ struct Vector2{
  * @param x Input vector.
  * @return Product vector x.
  */
-Vector2 matvec(const Matrix2x2& A,const Vector2& x){
+inline Vector2 matvec(const Matrix2x2 &A, const Vector2 &x)
+{
   Vector2 prod;
   prod.x1 = A.a11 * x.x1 + A.a12 * x.x2;
   prod.x2 = A.a21 * x.x1 + A.a22 * x.x2;
@@ -325,9 +355,10 @@ Vector2 matvec(const Matrix2x2& A,const Vector2& x){
  * @param b Input vector.
  * @return Solution vector x.
  */
-Vector2 solve(const Matrix2x2& A,const Vector2& b){
+inline Vector2 solve(const Matrix2x2 &A, const Vector2 &b)
+{
   Matrix2x2 A_inv = inverse(A);
-  Vector2 x = matvec(A_inv,b);
+  Vector2 x = matvec(A_inv, b);
   return x;
 }
 /**
@@ -337,6 +368,7 @@ Vector2 solve(const Matrix2x2& A,const Vector2& b){
  * @return max(|x1|, |x2|).
  */
 
-double infinity_norm(const Vector2& x){
-  return std::max(std::abs(x.x1),std::abs(x.x2));
+inline double infinity_norm(const Vector2 &x)
+{
+  return std::max(std::abs(x.x1), std::abs(x.x2));
 }

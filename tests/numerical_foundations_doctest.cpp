@@ -557,3 +557,34 @@ TEST_CASE("Jacobi Iteration approaches analytical solution")
 
   CHECK_THROWS_AS(jacobi_step(A, x1, b, {2.0, 0.0, 2.0}), std::invalid_argument);
 }
+
+TEST_CASE("Checking Jacoobi Iterative Solver to verify convergence")
+{
+  const auto A = make_tridiagonal_matrix(3, -1.0, 2.0, -1.0);
+  const std::vector<double> b{0.0, 2.0, 0.0};
+  const std::vector<double> diagonal{2.0, 2.0, 2.0};
+  const std::vector<double> x0{0.0, 0.0, 0.0};
+
+  const auto result = solve_jacobi(A, b, diagonal, x0, 1e-6, 100);
+
+  CHECK(result.converged);
+  CHECK(result.iterations <= 100);
+  CHECK(result.x[0] == doctest::Approx(1.0).epsilon(1e-4));
+  CHECK(result.x[1] == doctest::Approx(2.0).epsilon(1e-4));
+  CHECK(result.x[2] == doctest::Approx(1.0).epsilon(1e-4));
+  CHECK(result.residual_norm < 1.0e-5);
+
+  // Test 2 : Maximum iteration termination
+  const auto result2 = solve_jacobi(A, b, diagonal, x0, 1e-6, 2);
+
+  CHECK_FALSE(result2.converged);
+  CHECK(result2.iterations == 2);
+  CHECK(result2.residual_norm == doctest::Approx(1.0));
+
+  // Test 3 : Already converged initial guess
+  const std::vector<double> x_exact{1.0, 2.0, 1.0};
+  const auto result3 = solve_jacobi(A, b, diagonal, x_exact, 1e-6, 100);
+  CHECK(result3.converged);
+  CHECK(result3.iterations == 0);
+  CHECK(result3.residual_norm == doctest::Approx(0.0));
+}

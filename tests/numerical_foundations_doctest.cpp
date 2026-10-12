@@ -13,6 +13,8 @@
 #include <limits>
 #include <stdexcept>
 #include <vector>
+#include <limits>
+
 TEST_CASE("nearly_equal")
 {
   CHECK(nearly_equal(1.0, 1.0, 1e-9, 1e-12));
@@ -587,4 +589,72 @@ TEST_CASE("Checking Jacoobi Iterative Solver to verify convergence")
   CHECK(result3.converged);
   CHECK(result3.iterations == 0);
   CHECK(result3.residual_norm == doctest::Approx(0.0));
+}
+
+TEST_CASE("Validating Invalid inputs to Jacobi Iterative Solver")
+{
+  const auto A =
+      make_tridiagonal_matrix(3, -1.0, 2.0, -1.0);
+
+  const std::vector<double> b{0.0, 2.0, 0.0};
+  const std::vector<double> diagonal{2.0, 2.0, 2.0};
+  const std::vector<double> x0{0.0, 0.0, 0.0};
+
+  // Test A : checking invalid tolerances
+
+  CHECK_THROWS_AS(solve_jacobi(A, b, diagonal, x0, 0.0, 100), std::invalid_argument);
+  CHECK_THROWS_AS(solve_jacobi(A, b, diagonal, x0, -1e-6, 100), std::invalid_argument);
+  CHECK_THROWS_AS(solve_jacobi(A, b, diagonal, x0, std::numeric_limits<double>::infinity(), 100), std::invalid_argument);
+  CHECK_THROWS_AS(solve_jacobi(A, b, diagonal, x0, std::numeric_limits<double>::quiet_NaN(), 100), std::invalid_argument);
+
+  // Test B : Invalid diagonal
+  const std::vector<double> bad_diagonal{2.0, 0.0, 2.0};
+  CHECK_THROWS_AS(solve_jacobi(A, b, bad_diagonal, x0, 1e-6, 100), std::invalid_argument);
+  const std::vector<double> x_exact{1.0, 2.0, 1.0};
+  CHECK_THROWS_AS(solve_jacobi(A, b, bad_diagonal, x_exact, 1e-6, 100), std::invalid_argument);
+
+  // Test C : Dimension mismatch
+
+  const std::vector<double> wrong_x0{0.0, 0.0};
+  CHECK_THROWS_AS(solve_jacobi(A, b, diagonal, wrong_x0, 1e-6, 100), std::invalid_argument);
+  CHECK_THROWS_AS(solve_jacobi(A, b, diagonal, x0, 1e-6, 0), std::invalid_argument);
+}
+
+TEST_CASE("Zero RHS vector in jacobi iterative Solver")
+{
+  const std::vector<double> zero_rhs(3, 0.0);
+  const std::vector<double> zero_guess(3, 0.0);
+  const auto A =
+      make_tridiagonal_matrix(3, -1.0, 2.0, -1.0);
+
+  const std::vector<double> diagonal{2.0, 2.0, 2.0};
+
+  const auto result = solve_jacobi(A, zero_rhs, diagonal, zero_guess, 1e-6, 100);
+
+  CHECK(result.converged);
+  CHECK(result.iterations == 0);
+  CHECK(result.residual_norm == doctest::Approx(0.0));
+
+  REQUIRE(result.x.size() == 3);
+  CHECK(result.x[0] == doctest::Approx(0.0));
+  CHECK(result.x[1] == doctest::Approx(0.0));
+  CHECK(result.x[2] == doctest::Approx(0.0));
+
+  const std::vector<double> b{0.0, 2.0, 0.0};
+  const std::vector<double> x0{0.0, 0.0, 0.0};
+
+  const auto result2 = solve_jacobi(A, b, diagonal, x0, 1e-6, 100);
+  const auto residual = compute_residual(A, result2.x, b);
+
+  const std::vector<double> zeros(residual.size(), 0.0);
+
+  const double independently_computed_norm = l2_error(residual, zeros);
+
+  CHECK(result2.residual_norm == doctest::Approx(independently_computed_norm));
+
+  const double b_norm = l2_error(b, std::vector<double>(b.size(), 0.0));
+
+  CHECK(result2.residual_norm / b_norm <= 1e-6);
+  const auto short_run =
+      solve_jacobi(A, b, diagonal, x0, 1e-6, 2);
 }

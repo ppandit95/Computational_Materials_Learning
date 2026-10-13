@@ -658,3 +658,83 @@ TEST_CASE("Zero RHS vector in jacobi iterative Solver")
   const auto short_run =
       solve_jacobi(A, b, diagonal, x0, 1e-6, 2);
 }
+
+TEST_CASE("Jacobi Convergence Diagnostics")
+{
+
+  // Test A : Convergent Matrix
+  const auto A =
+      make_tridiagonal_matrix(3, -1.0, 2.0, -1.0);
+
+  const std::vector<double> b{0.0, 2.0, 0.0};
+  const std::vector<double> diagonal{2.0, 2.0, 2.0};
+  std::vector<double> x{0.0, 0.0, 0.0};
+  double r_old, r_now, contraction;
+  std::vector<double> reference(3, 0.0);
+  std::vector<double> residual = b;
+  std::vector<double> Ax = A.matvec(x);
+  for (std::size_t i = 0; i < b.size(); i++)
+  {
+    residual[i] -= Ax[i];
+  }
+  r_old = l2_error(residual, reference);
+  std::cout << std::setprecision(10);
+  std::cout << "iteration    residual_norm   contraction_factor" << std::endl;
+  for (std::size_t i = 0; i < 6; i++)
+  {
+    x = jacobi_step(A, x, b, diagonal);
+    Ax = A.matvec(x);
+    residual = b;
+    for (std::size_t j = 0; j < b.size(); j++)
+    {
+      residual[j] -= Ax[j];
+    }
+    r_now = l2_error(residual, reference);
+    contraction = r_now / r_old;
+    if (i < 3)
+    {
+      CHECK(contraction == doctest::Approx(1.0 / std::sqrt(2.0)).epsilon(1e-10));
+      CHECK(r_now < r_old);
+    }
+    std::cout << i << "   " << r_now << "   " << contraction << std::endl;
+    r_old = r_now;
+  }
+
+  // Test B : Divergent Matrix
+  const auto A2 =
+      make_tridiagonal_matrix(2, 2.0, 1.0, 2.0);
+
+  const std::vector<double> b2{1.0, 1.0};
+  const std::vector<double> diagonal2{1.0, 1.0};
+
+  std::vector<double> x2{0.0, 0.0};
+  std::vector<double> reference2(2, 0.0);
+  std::vector<double> residual2 = b2;
+  std::vector<double> Ax2 = A2.matvec(x2);
+  for (std::size_t i = 0; i < b2.size(); i++)
+  {
+    residual2[i] -= Ax2[i];
+  }
+  r_old = l2_error(residual2, reference2);
+  std::cout << std::setprecision(10);
+  std::cout << "iteration    residual_norm   contraction_factor" << std::endl;
+  for (std::size_t i = 0; i < 6; i++)
+  {
+    x2 = jacobi_step(A2, x2, b2, diagonal2);
+    Ax2 = A2.matvec(x2);
+    residual2 = b2;
+    for (std::size_t j = 0; j < b2.size(); j++)
+    {
+      residual2[j] -= Ax2[j];
+    }
+    r_now = l2_error(residual2, reference2);
+    contraction = r_now / r_old;
+    if (i < 3)
+    {
+      CHECK(contraction > 1.0);
+      CHECK(r_now > r_old);
+    }
+    std::cout << i << "   " << r_now << "   " << contraction << std::endl;
+    r_old = r_now;
+  }
+}

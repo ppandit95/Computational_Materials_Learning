@@ -510,3 +510,31 @@ target_link_libraries(
     tridiagonal_matrix
     csr_diagnostics
 )
+
+##################################################Benchmark for Jacoobi Iteration Scaling ##############################################
+add_executable(
+    jacobi_scaling
+    examples/jacobi_grid_benchmark.cpp
+)
+target_include_directories(jacobi_scaling
+    PRIVATE
+    /home/pushkar/computational_materials_learning/include
+)
+target_compile_options(
+    jacobi_scaling
+    PRIVATE
+    -fsanitize=address,undefined
+    -fno-omit-frame-pointer
+)
+target_link_options(
+    jacobi_scaling
+    PRIVATE
+    -fsanitize=address,undefined
+)
+target_link_libraries(
+    jacobi_scaling
+    PRIVATE
+    tridiagonal_matrix
+    csr_matrix
+    jacobi_iteration
+)

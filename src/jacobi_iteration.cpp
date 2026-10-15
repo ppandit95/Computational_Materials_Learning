@@ -133,3 +133,5 @@ JacobiResult solve_jacobi(
         residual_norm,
         false};
 }
+
+Why ratio of residuals approches 4 and not 2 as grid is refined ?

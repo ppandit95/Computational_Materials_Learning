@@ -174,3 +174,127 @@ def test_analytical_solution():
         0.5676676416183064,
         rel=1e-12,
     )
+
+
+# ============================================================
+# Test: Zero Time Steps
+# ============================================================
+
+
+def test_zero_steps():
+    sol = forward_euler_forced(u0=1.5, lam=2.0, source=1.0, dt=0.1, steps=0)
+    assert sol.shape == (1,)
+    assert sol[0] == pytest.approx(1.5)
+
+
+# ============================================================
+# Test: Stable_Perturbation Decay
+# ============================================================
+
+
+def test_stable_perturbation_decay():
+    sol = forward_euler_forced(u0=0.6, lam=2.0, source=1.0, dt=0.4, steps=12)
+    assert sol[1] <= sol[0]
+
+
+# ============================================================
+# Test: Unstable Perturbation Growth
+# ============================================================
+
+
+def test_unstable_perturbation_growth():
+
+    approx_sol = forward_euler_forced(
+        u0=0.6,
+        lam=2.0,
+        source=1.0,
+        dt=1.1,
+        steps=6,
+    )
+
+    equilibrium = 1.0 / 2.0
+
+    perturbation = approx_sol - equilibrium
+
+    perturbation_magnitude = np.abs(perturbation)
+
+    assert np.all(perturbation_magnitude[1:] > perturbation_magnitude[:-1])
+
+
+# ============================================================
+# Test: Stability Boundary
+# ============================================================
+
+
+def test_stability_boundary():
+
+    lam = 2.0
+    dt = 1.0
+    source = 1.0
+
+    approx_sol = forward_euler_forced(
+        u0=0.6,
+        lam=lam,
+        source=source,
+        dt=dt,
+        steps=6,
+    )
+
+    equilibrium = source / lam
+
+    perturbation = approx_sol - equilibrium
+
+    perturbation_magnitude = np.abs(perturbation)
+
+    # Verify constant perturbation magnitude.
+    np.testing.assert_allclose(
+        perturbation_magnitude[1:],
+        perturbation_magnitude[:-1],
+        rtol=1e-12,
+        atol=1e-14,
+    )
+
+    # Verify alternating perturbation sign.
+    np.testing.assert_allclose(
+        perturbation[1:],
+        -perturbation[:-1],
+        rtol=1e-12,
+        atol=1e-14,
+    )
+
+
+@pytest.mark.parametrize(
+    "u0,lam,source,dt,steps",
+    [
+        # Invalid number of steps
+        (0.6, 2.0, 1.0, 0.4, -1),
+        (0.6, 2.0, 1.0, 0.4, 2.5),
+        (0.6, 2.0, 1.0, 0.4, np.nan),
+        (0.6, 2.0, 1.0, 0.4, True),
+        # Invalid decay coefficient
+        (0.6, np.inf, 1.0, 0.4, 12),
+        # Invalid source
+        (0.6, 2.0, np.nan, 0.4, 12),
+        # Invalid time step
+        (0.6, 2.0, 1.0, 0.0, 12),
+    ],
+)
+def test_forward_euler_forced_invalid_inputs(
+    u0,
+    lam,
+    source,
+    dt,
+    steps,
+):
+    """
+    Verify that invalid solver inputs raise ValueError.
+    """
+
+    with pytest.raises(ValueError):
+        forward_euler_forced(
+            u0=u0,
+            lam=lam,
+            source=source,
+            dt=dt,
+            steps=steps,
+        )

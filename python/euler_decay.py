@@ -1,4 +1,5 @@
 import numpy as np
+import math
 
 
 def forward_euler_decay(u0: float, lam: float, dt: float, steps: int) -> np.ndarray:
@@ -43,3 +44,36 @@ def forward_euler_decay(u0: float, lam: float, dt: float, steps: int) -> np.ndar
         sol[i] = (1 - lam * dt) * sol[i - 1]
 
     return sol
+
+
+def exact_decay(u0: float, lam: float, time: np.ndarray) -> np.ndarray:
+    """
+    Evaluate the analytical solution of du/dt = -lam*u
+
+    Parameters
+    ----------
+    u0: float
+        Initial value
+    lam: float
+        Positive Decay coefficient in inverse-time units
+    time: np.ndarray
+        Non-negative physical time
+
+    Returns
+    -------
+    np.ndarray
+        Analytical solution evaluated at the supplied time
+
+    Raises
+    ------
+    ValueError
+        If the inputs voilate the physical or numerical constraints.
+    """
+    if (
+        np.any(time < 0.0)
+        or lam <= 0
+        or math.isnan(u0)
+        or not np.all(np.isfinite(time))
+    ):
+        raise ValueError("The inputs provided are in compatible.")
+    return u0 * np.exp(-lam * time)

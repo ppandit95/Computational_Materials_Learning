@@ -538,3 +538,74 @@ target_link_libraries(
     csr_matrix
     jacobi_iteration
 )
+##################################################
+# Poisson 1D: CSR Operator Builder
+##################################################
+
+add_library(
+    poisson_1d
+    src/poisson_1d.cpp
+)
+
+target_include_directories(
+    poisson_1d
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+target_link_libraries(
+    poisson_1d
+    PUBLIC
+    csr_matrix
+    PRIVATE
+    tridiagonal_matrix
+)
+
+target_compile_options(
+    poisson_1d
+    PRIVATE
+    -Wall
+    -Wextra
+    -Wpedantic
+    -Wconversion
+    -fsanitize=address,undefined
+    -fno-omit-frame-pointer
+)
+
+##################################################
+# Poisson 1D: doctest
+##################################################
+
+add_executable(
+    poisson_1d_test
+    tests/test_poisson_1d.cpp
+)
+
+target_link_libraries(
+    poisson_1d_test
+    PRIVATE
+    poisson_1d
+    doctest::doctest
+)
+
+target_compile_options(
+    poisson_1d_test
+    PRIVATE
+    -Wall
+    -Wextra
+    -Wpedantic
+    -Wconversion
+    -fsanitize=address,undefined
+    -fno-omit-frame-pointer
+)
+
+target_link_options(
+    poisson_1d_test
+    PRIVATE
+    -fsanitize=address,undefined
+)
+
+add_test(
+    NAME poisson_1d_test
+    COMMAND poisson_1d_test
+)

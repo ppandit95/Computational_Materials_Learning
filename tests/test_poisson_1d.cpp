@@ -2,7 +2,7 @@
 #include <doctest/doctest.h>
 
 #include "csr_matrix.hpp"
-
+#include "numerical_foundations.hpp"
 #include "tridiagonal.hpp"
 
 #include "poisson_1d.hpp"
@@ -71,4 +71,98 @@ TEST_CASE("Validating Invalid Inputs to Poisson Builder Function")
   CHECK_THROWS_AS(build_poisson_1d(0, 1.0), std::invalid_argument);
   CHECK_THROWS_AS(build_poisson_1d(3, 0.0), std::invalid_argument);
   CHECK_THROWS_AS(build_poisson_1d(3, -1.0), std::invalid_argument);
+}
+
+TEST_CASE("Verifying Non Homogeneous Dirichlet Boundary Conditions RHS Builder")
+{
+  const std::vector<double> u_exact{1.6875, 2.25, 2.6875};
+  double u_left = 1.0;
+  double u_right = 3.0;
+  const std::vector<double> source_values{2.0, 2.0, 2.0};
+  const std::vector<double> expected_rhs{18.0, 2.0, 50.0};
+  std::vector<double> rhs = build_poisson_rhs(source_values, 1.0, u_left, u_right);
+
+  CHECK(rhs[0] == doctest::Approx(expected_rhs[0]));
+  CHECK(rhs[1] == doctest::Approx(expected_rhs[1]));
+  CHECK(rhs[2] == doctest::Approx(expected_rhs[2]));
+}
+
+TEST_CASE("Verify analytical residual for Non Homogeneous Dirichlet Problem")
+{
+  const CSRMatrix A = build_poisson_1d(3, 1.0);
+  const std::vector<double> analytical_solution{1.6875, 2.25, 2.6875};
+  const auto product = A.matvec(analytical_solution);
+  double u_left = 1.0;
+  double u_right = 3.0;
+  const std::vector<double> source_values{2.0, 2.0, 2.0};
+  std::vector<double> rhs = build_poisson_rhs(source_values, 1.0, u_left, u_right);
+  std::vector<double> residual{0.0, 0.0, 0.0};
+  for (std::size_t i = 0; i < rhs.size(); i++)
+  {
+    residual[i] = rhs[i] - product[i];
+  }
+  const double residual_norm = linf_error(residual, {0.0, 0.0, 0.0});
+
+  CHECK(residual_norm < 1.0e-12);
+}
+
+TEST_CASE("Considering Single interior Point within the Domain")
+{
+  const std::size_t N = 1;
+  const double length = 1.0;
+  const double u_left = 1.0;
+  const double u_right = 3.0;
+  const std::vector<double> source_values{2.0};
+  const CSRMatrix A = build_poisson_1d(N, length);
+  const std::vector<double> u_exact{2.25};
+  const std::vector<double> product = A.matvec(u_exact);
+  const std::vector<double> rhs = build_poisson_rhs(source_values, length, u_left, u_right);
+
+  CHECK(product[0] == doctest::Approx(rhs[0]));
+}
+TEST_CASE("Invalid Inputs to RHS function")
+{
+  const std::vector<double> source{2.0, 2.0, 2.0};
+
+  // Empty source vector
+  CHECK_THROWS_AS(
+      build_poisson_rhs({}, 1.0, 1.0, 3.0),
+      std::invalid_argument);
+
+  // Zero domain length
+  CHECK_THROWS_AS(
+      build_poisson_rhs(source, 0.0, 1.0, 3.0),
+      std::invalid_argument);
+
+  // Negative domain length
+  CHECK_THROWS_AS(
+      build_poisson_rhs(source, -1.0, 1.0, 3.0),
+      std::invalid_argument);
+
+  // Nonfinite left boundary value
+  CHECK_THROWS_AS(
+      build_poisson_rhs(
+          source,
+          1.0,
+          std::numeric_limits<double>::quiet_NaN(),
+          3.0),
+      std::invalid_argument);
+
+  // Nonfinite right boundary value
+  CHECK_THROWS_AS(
+      build_poisson_rhs(
+          source,
+          1.0,
+          1.0,
+          std::numeric_limits<double>::infinity()),
+      std::invalid_argument);
+
+  // Nonfinite source entry
+  CHECK_THROWS_AS(
+      build_poisson_rhs(
+          {2.0, std::numeric_limits<double>::infinity(), 2.0},
+          1.0,
+          1.0,
+          3.0),
+      std::invalid_argument);
 }

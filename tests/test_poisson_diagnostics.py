@@ -45,3 +45,8 @@ def test_poisson_diagnostics():
     # Test 5: Invalid input
     with pytest.raises(ValueError):
         diagnose_poisson(0)
+
+    # Test 6: Smallest Valid Grid
+    result = diagnose_poisson(1)
+
+    assert all(math.isfinite(v) and v >= 0 for v in result.values())

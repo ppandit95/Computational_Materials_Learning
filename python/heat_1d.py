@@ -1,11 +1,16 @@
 import numpy as np
 
 
+def two_mode_initial_condition(x):
+    return np.sin(np.pi * x) + 0.25 * np.sin(3 * np.pi * x)
+
+
 def solve_heat_ftcs(
     n_interior: int,
     alpha: float,
     dt: float,
     n_steps: int,
+    initial_condition=None,
 ):
     """
     Solve the 1D heat equation using explicit FTCS.
@@ -20,6 +25,9 @@ def solve_heat_ftcs(
         Time-step size in seconds.
     n_steps : int
         Number of explicit time steps.
+    initial_condition : callable, optional
+        Function of x defining the initial temperature distribution.
+        If None, defaults to u(x,0) = sin(pi*x).
 
     Returns
     -------
@@ -34,6 +42,8 @@ def solve_heat_ftcs(
     ------
     ValueError
         If parameters are invalid or FTCS is unstable.
+    ValueError
+        If the initial condition shape does not match the spatial grid.
     """
     if n_interior < 1:
         raise ValueError("n_interior must be at least 1.")
@@ -53,8 +63,14 @@ def solve_heat_ftcs(
     if r > 0.5:
         raise ValueError(f"FTCS is unstable for r={r:.3f} > 0.5.")
 
-    # Initial condition: u(x,0) = sin(pi*x)
-    u = np.sin(np.pi * x)
+    if initial_condition is not None:
+        u = initial_condition(x)
+    else:
+        # Initial condition: u(x,0) = sin(pi*x)
+        u = np.sin(np.pi * x)
+
+    if u.shape != x.shape:
+        raise ValueError("Initial condition shape must match the spatial grid")
 
     # Time-stepping loop
     for _ in range(n_steps):

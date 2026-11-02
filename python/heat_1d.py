@@ -51,8 +51,8 @@ def solve_heat_ftcs(
         raise ValueError("alpha must be positive.")
     if dt <= 0:
         raise ValueError("dt must be positive.")
-    if n_steps < 1:
-        raise ValueError("n_steps must be at least 1.")
+    if n_steps < 0:
+        raise ValueError("n_steps must be non-negative.")
 
     # Spatial grid
     dx = 1.0 / (n_interior + 1)

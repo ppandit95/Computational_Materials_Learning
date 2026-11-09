@@ -13,37 +13,55 @@ def solve_heat_ftcs(
     initial_condition=None,
 ):
     """
-    Solve the 1D heat equation using explicit FTCS.
+    Solve the one-dimensional heat equation on the unit interval using FTCS.
+
+    The solver advances ``u_t = alpha * u_xx`` on ``0 <= x <= 1``. The
+    reference problem uses homogeneous Dirichlet boundary values and the
+    default initial condition ``sin(pi * x)``. A vectorized callable such as
+    :func:`two_mode_initial_condition` may be supplied instead; it must
+    accept the complete spatial grid and return one value at every grid node.
 
     Parameters
     ----------
     n_interior : int
-        Number of interior spatial grid points.
+        Number of interior spatial grid points (dimensionless count).
     alpha : float
         Thermal diffusivity in m^2/s.
     dt : float
         Time-step size in seconds.
     n_steps : int
-        Number of explicit time steps.
+        Number of explicit time steps (dimensionless non-negative count).
     initial_condition : callable, optional
-        Function of x defining the initial temperature distribution.
-        If None, defaults to u(x,0) = sin(pi*x).
+        Vectorized function of the dimensionless coordinates ``x`` in
+        ``[0, 1]`` defining ``u(x, 0)``. It must return an array with
+        ``n_interior + 2`` entries, including the two boundary values. If
+        omitted, the supported reference condition ``u(x, 0) = sin(pi*x)``
+        is used. The callable's endpoint values are retained by the update;
+        use zero endpoints for the homogeneous-Dirichlet reference problem.
+
+    Notes
+    -----
+    With ``dx = 1 / (n_interior + 1)``, explicit FTCS is stable only when
+    ``r = alpha * dt / dx**2 <= 0.5``. The method rejects larger values of
+    ``r`` before stepping.
 
     Returns
     -------
     x : ndarray
-        Spatial grid including boundary nodes.
+        Dimensionless spatial grid on ``[0, 1]``, including boundary nodes.
     u : ndarray
-        Temperature field at the final time.
+        Temperature field at ``t_final`` in the same units as the initial
+        condition.
     t_final : float
         Final simulation time in seconds.
 
     Raises
     ------
     ValueError
-        If parameters are invalid or FTCS is unstable.
+        If ``n_interior < 1``, ``alpha <= 0``, ``dt <= 0``,
+        ``n_steps < 0``, or the FTCS stability restriction is violated.
     ValueError
-        If the initial condition shape does not match the spatial grid.
+        If the initial condition does not match the spatial-grid shape.
     """
     if n_interior < 1:
         raise ValueError("n_interior must be at least 1.")

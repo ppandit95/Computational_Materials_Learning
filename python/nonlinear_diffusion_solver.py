@@ -33,6 +33,20 @@ def solve_nonlinear_diffusion(
     ndarray
         Final cell-average concentrations.
     """
+    c0 = np.asarray(c0, dtype=float)
+
+    if c0.ndim != 1:
+        raise ValueError("Initial concentration must be a 1D array.")
+
+    if c0.size < 2:
+        raise ValueError("At least two finite-volume cells are required.")
+
+    if not np.all(np.isfinite(c0)):
+        raise ValueError("Initial concentration must contain finite values.")
+
+    if np.any((c0 < 0.0) | (c0 > 1.0)):
+        raise ValueError("Concentration must lie within [0, 1].")
+
     if dt <= 0:
         raise ValueError("Time step dt must be positive.")
     if np.all(c0) < 0:

@@ -3,7 +3,7 @@ import pandas as pd
 
 from pathlib import Path
 
-from python.nonlinear_diffusion_solver import solve_nonlinear_diffusion
+from nonlinear_diffusion_solver import solve_nonlinear_diffusion
 
 
 def diagnose_nonlinear_diffusion_exp1():

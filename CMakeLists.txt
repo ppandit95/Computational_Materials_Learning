@@ -609,3 +609,73 @@ add_test(
     NAME poisson_1d_test
     COMMAND poisson_1d_test
 )
+##################################################
+# Allen-Cahn 1D : Numerical Library
+##################################################
+
+add_library(
+    AC_1d
+    STATIC
+    src/allen_cahn.cpp
+)
+
+target_include_directories(
+    AC_1d
+    PUBLIC
+    ${PROJECT_SOURCE_DIR}/include
+)
+
+target_compile_options(
+    AC_1d
+    PRIVATE
+    -Wall
+    -Wextra
+    -Wpedantic
+    -Wconversion
+    -fsanitize=address,undefined
+    -fno-omit-frame-pointer
+)
+
+target_link_options(
+    AC_1d
+    INTERFACE
+    -fsanitize=address,undefined
+)
+
+##################################################
+# Allen-Cahn 1D : doctest
+##################################################
+
+add_executable(
+    AC_1d_test
+    tests/test_allen_cahn.cpp
+)
+
+target_link_libraries(
+    AC_1d_test
+    PRIVATE
+    AC_1d
+    doctest::doctest
+)
+
+target_compile_options(
+    AC_1d_test
+    PRIVATE
+    -Wall
+    -Wextra
+    -Wpedantic
+    -Wconversion
+    -fsanitize=address,undefined
+    -fno-omit-frame-pointer
+)
+
+target_link_options(
+    AC_1d_test
+    PRIVATE
+    -fsanitize=address,undefined
+)
+
+add_test(
+    NAME AC_1d_test
+    COMMAND AC_1d_test
+)
